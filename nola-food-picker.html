@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOLA Eats — What's for Dinner?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #D4A857;
+    --gold-light: #F0D99C;
+    --deep: #1A1A2E;
+    --card-bg: #16213E;
+    --card-hover: #1A2744;
+    --surface: #0F3460;
+    --white: #F5F0E8;
+    --muted: #9B9B9B;
+    --green: #4CAF50;
+    --red-accent: #C0392B;
+    --delivery-uber: #06C167;
+    --delivery-dd: #FF3008;
+    --delivery-grubhub: #F63440;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--deep);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .bg-texture {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(212,168,87,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(15,52,96,0.3) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 100%, rgba(212,168,87,0.04) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 20px 60px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 48px;
+    animation: fadeDown 0.6s ease-out;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .fleur {
+    font-size: 28px;
+    color: var(--gold);
+    letter-spacing: 12px;
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    color: var(--gold);
+    letter-spacing: 1px;
+    line-height: 1.15;
+  }
+
+  h1 span {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    font-size: 0.38em;
+    color: var(--muted);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+
+  .prompt {
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--white);
+    margin-bottom: 28px;
+    font-weight: 500;
+    animation: fadeUp 0.5s ease-out 0.2s both;
+  }
+
+  /* Protein Grid */
+  .protein-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .protein-btn {
+    background: var(--card-bg);
+    border: 1.5px solid rgba(212,168,87,0.15);
+    border-radius: 14px;
+    padding: 22px 12px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.25s ease;
+    animation: fadeUp 0.4s ease-out both;
+  }
+
+  .protein-btn:nth-child(1) { animation-delay: 0.15s; }
+  .protein-btn:nth-child(2) { animation-delay: 0.2s; }
+  .protein-btn:nth-child(3) { animation-delay: 0.25s; }
+  .protein-btn:nth-child(4) { animation-delay: 0.3s; }
+  .protein-btn:nth-child(5) { animation-delay: 0.35s; }
+  .protein-btn:nth-child(6) { animation-delay: 0.4s; }
+  .protein-btn:nth-child(7) { animation-delay: 0.45s; }
+
+  .protein-btn:hover {
+    background: var(--card-hover);
+    border-color: var(--gold);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(212,168,87,0.12);
+  }
+
+  .protein-btn .emoji {
+    font-size: 2.2rem;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .protein-btn .label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--white);
+  }
+
+  /* Results */
+  #results {
+    display: none;
+  }
+
+  #results.visible {
+    display: block;
+  }
+
+  .results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    animation: fadeUp 0.4s ease-out;
+  }
+
+  .results-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--gold-light);
+  }
+
+  .back-btn {
+    background: none;
+    border: 1.5px solid rgba(212,168,87,0.3);
+    color: var(--gold);
+    padding: 8px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+
+  .back-btn:hover {
+    background: rgba(212,168,87,0.1);
+    border-color: var(--gold);
+  }
+
+  .restaurant-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(212,168,87,0.1);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 16px;
+    transition: all 0.25s;
+    animation: scaleIn 0.4s ease-out both;
+  }
+
+  .restaurant-card:nth-child(1) { animation-delay: 0.1s; }
+  .restaurant-card:nth-child(2) { animation-delay: 0.22s; }
+  .restaurant-card:nth-child(3) { animation-delay: 0.34s; }
+
+  .restaurant-card:hover {
+    border-color: rgba(212,168,87,0.3);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+
+  .restaurant-name {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--white);
+  }
+
+  .neighborhood {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  .delivery-badges {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 4px 9px;
+    border-radius: 6px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+
+  .badge-uber { background: rgba(6,193,103,0.15); color: var(--delivery-uber); }
+  .badge-dd { background: rgba(255,48,8,0.12); color: var(--delivery-dd); }
+  .badge-gh { background: rgba(246,52,64,0.12); color: var(--delivery-grubhub); }
+
+  .divider {
+    height: 1px;
+    background: rgba(212,168,87,0.1);
+    margin: 14px 0;
+  }
+
+  .dish-section {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .dish-icon {
+    font-size: 1.6rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .dish-info {
+    flex: 1;
+  }
+
+  .dish-name {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--gold-light);
+    margin-bottom: 4px;
+  }
+
+  .dish-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .dish-price {
+    font-weight: 600;
+    color: var(--gold);
+    margin-top: 6px;
+    font-size: 0.95rem;
+  }
+
+  .shuffle-btn {
+    display: block;
+    margin: 32px auto 0;
+    background: linear-gradient(135deg, var(--gold), #B8922E);
+    color: var(--deep);
+    border: none;
+    padding: 14px 36px;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s;
+    letter-spacing: 0.5px;
+  }
+
+  .shuffle-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212,168,87,0.3);
+  }
+
+  @media (max-width: 520px) {
+    .protein-grid { grid-template-columns: repeat(2, 1fr); }
+    .card-top { flex-direction: column; gap: 8px; }
+    .container { padding: 24px 16px 48px; }
+  }
+</style>
+</head>
+<body>
+<div class="bg-texture"></div>
+<div class="container">
+  <header>
+    <div class="fleur">⚜ ⚜ ⚜</div>
+    <h1>NOLA Eats<span>New Orleans Delivery Finder</span></h1>
+  </header>
+
+  <div id="selection">
+    <p class="prompt">Pick your protein and we'll find dinner.</p>
+    <div class="protein-grid">
+      <div class="protein-btn" onclick="pickProtein('chicken')">
+        <span class="emoji">🍗</span>
+        <span class="label">Chicken</span>
+      </div>
+      <div class="protein-btn" onclick="pickProtein('lamb')">
+        <span class="emoji">🐑</span>
+        <span class="label">Lamb</span>
+      </div>
+      <div class="protein-btn" onclick="pickProtein('beef')">
+        <span class="emoji">🥩</span>
+        <span class="label">Beef</span>
+      </div>
+      <div class="protein-btn" onclick="pickProtein('fish')">
+        <span class="emoji">🐟</span>
+        <span class="label">Fish</span>
+      </div>
+      <div class="protein-btn" onclick="pickProtein('pork')">
+        <span class="emoji">🥓</span>
+        <span class="label">Pork</span>
+      </div>
+      <div class="protein-btn" onclick="pickProtein('shrimp')">
+        <span class="emoji">🦐</span>
+        <span class="label">Shrimp</span>
+      </div>
+      <div class="protein-btn" onclick="pickProtein('vegetarian')">
+        <span class="emoji">🥬</span>
+        <span class="label">Vegetarian</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="results">
+    <div class="results-header">
+      <h2 id="results-title"></h2>
+      <button class="back-btn" onclick="goBack()">← Pick Again</button>
+    </div>
+    <div id="cards"></div>
+    <button class="shuffle-btn" onclick="shuffleCurrent()">🎲 &nbsp;Surprise Me Again</button>
+  </div>
+</div>
+
+<script>
+const data = {
+  chicken: [
+    { name: "Willie Mae's Scotch House", hood: "Tremé", dish: "Fried Chicken Platter", desc: "The legendary Scotch House bird — crispy, juicy, James Beard Award-winning fried chicken with butter beans and bread.", price: "$16", icon: "🍗", delivery: ["Uber Eats", "DoorDash"] },
+    { name: "Luvi", hood: "Bywater", dish: "Rotisserie Half Chicken", desc: "French-inspired rotisserie chicken with seasonal veggie sides and herb jus.", price: "$18", icon: "🍗", delivery: ["DoorDash", "Uber Eats"] },
+    { name: "Cane & Table", hood: "French Quarter", dish: "Jerk Chicken", desc: "Caribbean-spiced bone-in chicken, scotch bonnet glaze, rice and peas.", price: "$22", icon: "🌶️", delivery: ["Uber Eats"] },
+    { name: "Piece of Meat", hood: "Mid-City", dish: "Smoked Chicken Plate", desc: "Slow-smoked half chicken with two Southern sides and white bread.", price: "$15", icon: "🔥", delivery: ["DoorDash", "Uber Eats"] },
+    { name: "Heard Dat Kitchen", hood: "Gentilly", dish: "Fried Chicken Basket", desc: "Crispy fried chicken served with fries, coleslaw, and comeback sauce.", price: "$14", icon: "🍗", delivery: ["DoorDash", "Uber Eats"] },
+    { name: "Li'l Dizzy's Cafe", hood: "Tremé", dish: "Fried Chicken Lunch", desc: "Classic NOLA soul food fried chicken with cornbread and greens.", price: "$15", icon: "🍗", delivery: ["Uber Eats"] },
+  ],
+  lamb: [
+    { name: "Saba", hood: "Magazine Street", dish: "Lamb Shank", desc: "Braised lamb shank, Israeli couscous, harissa, and pickled turnips. Modern Israeli soul food.", price: "$34", icon: "🍖", delivery: ["Uber Eats", "DoorDash"] },
+    { name: "1000 Figs", hood: "Magazine Street", dish: "Lamb Kofta Plate", desc: "Spiced ground lamb skewers with hummus, tabbouleh, and warm pita.", price: "$17", icon: "🥙", delivery: ["DoorDash", "Uber Eats"] },
+    { name: "Kebab", hood: "Mid-City", dish: "Lamb Kebab Platter", desc: "Char-grilled lamb kebabs over basmati rice with grilled veggies and tzatziki.", price: "$18", icon: "🔥", delivery: ["DoorDash", "Uber Eats"] },
+    { name: "Tal's Hummus", hood: "Uptown", dish: "Lamb Shawarma Bowl", desc: "Slow-roasted seasoned lamb over rice with pickles, tahini, and house hummus.", price: "$16", icon: "🥙", delivery: ["Uber Eats", "DoorDash"] },
+    { name: "Shaya", hood: "Uptown", dish: "Wood-Fired Lamb Chops", desc: "Herb-crusted lamb chops with labneh and seasonal accompaniments.", price: "$38", icon: "🍖", delivery: ["Uber Eats"] },
+    { name: "Pyramid Cafe", hood: "Kenner", dish: "Lamb Gyro Plate", desc: "Seasoned lamb and beef gyro meat with Greek salad, feta, and pita.", price: "$14", icon: "🥙", delivery: ["DoorDash", "Uber Eats"] },
+  ],
+  beef: [
+    { name: "Company Burger", hood: "Freret Street", dish: "The Company Burger", desc: "Double patty smash burger, American cheese, house-made pickles, special sauce.", price: "$12", icon: "🍔", delivery: ["DoorDash", "Uber Eats"] },
+    { name: "Yo Mama's Bar & Grill", hood: "French Quarter", dish: "Bacon Cheddar Burger", desc: "Half-pound Angus patty loaded with applewood bacon, cheddar, and garlic aioli.", price: "$16", icon: "🍔", delivery: ["Uber Eats", "DoorDash"] },
+    { name: "Desi Vega's Steakhouse", hood: "Metairie", dish: "14oz Ribeye", desc: "Prime-grade ribeye, charbroiled and finished with garlic butter. Old-school steakhouse.", price: "$52", icon: "🥩", delivery: ["DoorDash"] },
+    { name: "Fharmacy", hood: "Bywater", dish: "The Fharmacy Burger", desc: "Grass-fed beef burger with house-ground blend, seasonal toppings.", price: "$14", icon: "🍔", delivery: ["DoorDash", "Uber Eats"] },
+    { name: "Copper Vine", hood: "CBD", dish: "Hanger Steak Frites", desc: "Pan-seared hanger steak with truffle fries and peppercorn sauce.", price: "$29", icon: "🥩", delivery: ["Uber Eats"] },
+    { name: "Charcoal's Gourmet Burger Bar", hood: "Kenner", dish: "Charcoal's Classic", desc: "Chargrilled burger with pepper jack, grilled onions, and house sauce.", price: "$13", icon: "🍔", delivery: ["DoorDash", "Uber Eats"] },
+  ],
+  fish: [
+    { name: "Pêche Seafood Grill", hood: "Warehouse District", dish: "Whole Roasted Fish", desc: "Daily catch, whole roasted with chili glaze and herb salad. James Beard winning seafood.", price: "$32", icon: "🐟", delivery: ["Uber Eats", "DoorDash"] },
+    { name: "GW Fins", hood: "French Quarter", dish: "Scalibut", desc: "Pan-seared halibut with lobster sauce, a signature preparation from one of NOLA's premier seafood restaurants.", price: "$44", icon: "🐟", delivery: ["Uber Eats"] },
+    { name: "Cochon", hood: "Warehouse District", dish: "Louisiana Catfish", desc: "Fried Gulf catfish with pickled watermelon rind and ranch-style tartar sauce.", price: "$25", icon: "🐱", delivery: ["DoorDash", "Uber Eats"] },
+    { name: "Trenasse", hood: "CBD", dish: "Drum Court-Bouillon", desc: "Gulf drum in a Creole tomato-based court-bouillon over steamed rice.", price: "$28", icon: "🐟", delivery: ["Uber Eats"] },
+    { name: "Katie's", hood: "Mid-City", dish: "Grilled Fish Platter", desc: "Fresh Gulf fish chargrilled with lemon butter, roasted veggies, and rice.", price: "$24", icon: "🐟", delivery: ["DoorDash", "Uber Eats"] },
+    { name: "Elysian Seafood", hood: "Bywater", dish: "Fish Sandwich", desc: "Crispy fried Gulf fish on a toasted bun with slaw and remoulade.", price: "$14", icon: "🐟", delivery: ["DoorDash"] },
+  ],
+  pork: [
+    { name: "Cochon Butcher", hood: "Warehouse District", dish: "Pork Belly Sandwich", desc: "Melt-in-your-mouth pork belly, jalapeño-mint jelly, crispy cracklins on a pressed roll.", price: "$14", icon: "🥪", delivery: ["DoorDash", "Uber Eats"] },
+    { name: "Boucherie", hood: "Uptown", dish: "Pulled Pork Plate", desc: "Slow-smoked pulled pork shoulder, smoked boudin balls, and Southern sides.", price: "$17", icon: "🐷", delivery: ["Uber Eats", "DoorDash"] },
+    { name: "Joint (The)", hood: "Bywater", dish: "Pulled Pork Platter", desc: "Hickory-smoked pulled pork piled high with coleslaw and baked beans.", price: "$15", icon: "🔥", delivery: ["DoorDash"] },
+    { name: "Toups' Meatery", hood: "Mid-City", dish: "Double-Cut Pork Chop", desc: "Massive bone-in Berkshire pork chop, brined and grilled, Cajun country-style.", price: "$32", icon: "🍖", delivery: ["Uber Eats"] },
+    { name: "Piece of Meat", hood: "Mid-City", dish: "Smoked Ribs (Half Rack)", desc: "St. Louis-style pork ribs, dry-rubbed and smoked, with two sides.", price: "$22", icon: "🔥", delivery: ["DoorDash", "Uber Eats"] },
+    { name: "Blue Oak BBQ", hood: "Mid-City", dish: "Pulled Pork Sandwich", desc: "Low-and-slow smoked pork on a brioche bun with vinegar slaw.", price: "$13", icon: "🥪", delivery: ["DoorDash", "Uber Eats"] },
+  ],
+  shrimp: [
+    { name: "Pascal's Manale", hood: "Uptown", dish: "Original BBQ Shrimp", desc: "The OG — head-on Gulf shrimp swimming in buttery, peppery BBQ sauce. Bring bread.", price: "$32", icon: "🦐", delivery: ["DoorDash"] },
+    { name: "Deanie's Seafood", hood: "Bucktown", dish: "BBQ Shrimp Platter", desc: "Jumbo Gulf shrimp in a rich butter and spice sauce with French bread for soaking.", price: "$28", icon: "🦐", delivery: ["DoorDash", "Uber Eats"] },
+    { name: "Mr. Ed's Oyster Bar", hood: "Kenner", dish: "Shrimp Po-Boy", desc: "Golden fried Gulf shrimp on Leidenheimer French bread, dressed with lettuce, tomato, mayo.", price: "$16", icon: "🥖", delivery: ["DoorDash", "Uber Eats"] },
+    { name: "Liuzza's By The Track", hood: "Mid-City", dish: "Shrimp & Grits", desc: "Sautéed Gulf shrimp over creamy stone-ground grits with Creole cream sauce.", price: "$18", icon: "🦐", delivery: ["Uber Eats"] },
+    { name: "Mahony's Po-Boys", hood: "Uptown", dish: "Peacemaker Po-Boy", desc: "Fried shrimp and oysters together on French bread — the best of both worlds.", price: "$19", icon: "🥖", delivery: ["DoorDash", "Uber Eats"] },
+    { name: "Neyow's Creole Cafe", hood: "Mid-City", dish: "Shrimp Creole", desc: "Gulf shrimp in a rich tomato Creole sauce over steamed white rice.", price: "$20", icon: "🦐", delivery: ["DoorDash"] },
+  ],
+  vegetarian: [
+    { name: "Seed", hood: "Lower Garden District", dish: "Buddha Bowl", desc: "Roasted seasonal veggies, quinoa, avocado, tahini drizzle — fully plant-based.", price: "$15", icon: "🥗", delivery: ["DoorDash", "Uber Eats"] },
+    { name: "Carmo", hood: "Warehouse District", dish: "Tropical Veggie Bowl", desc: "Caribbean and Brazilian-inspired bowl with plantains, black beans, rice, and sofrito.", price: "$16", icon: "🌴", delivery: ["Uber Eats", "DoorDash"] },
+    { name: "1000 Figs", hood: "Magazine Street", dish: "Falafel Plate", desc: "Crispy housemade falafel with hummus, Israeli salad, pickled beets, and pita.", price: "$15", icon: "🧆", delivery: ["DoorDash", "Uber Eats"] },
+    { name: "Sweet Soulfood", hood: "Gentilly", dish: "Veggie Plate", desc: "Pick three Southern veggie sides — mac & cheese, greens, yams, cornbread.", price: "$13", icon: "🥬", delivery: ["DoorDash"] },
+    { name: "Saba", hood: "Magazine Street", dish: "Hummus & Pita Spread", desc: "Silky smooth hummus, wood-fired pita, and an array of Israeli mezze.", price: "$14", icon: "🥙", delivery: ["Uber Eats", "DoorDash"] },
+    { name: "Tal's Hummus", hood: "Uptown", dish: "Veggie Shawarma Bowl", desc: "Roasted cauliflower and eggplant over rice with tahini and pickled veggies.", price: "$14", icon: "🥙", delivery: ["Uber Eats", "DoorDash"] },
+  ]
+};
+
+let currentProtein = null;
+
+function pickProtein(protein) {
+  currentProtein = protein;
+  showResults(protein);
+}
+
+function showResults(protein) {
+  document.getElementById('selection').style.display = 'none';
+  const results = document.getElementById('results');
+  results.classList.add('visible');
+
+  const label = protein.charAt(0).toUpperCase() + protein.slice(1);
+  document.getElementById('results-title').textContent = `${label} — 3 Picks`;
+
+  renderCards(protein);
+}
+
+function renderCards(protein) {
+  const pool = [...data[protein]];
+  // Shuffle and pick 3
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  const picks = pool.slice(0, 3);
+
+  const cardsEl = document.getElementById('cards');
+  cardsEl.innerHTML = picks.map(r => {
+    const badges = r.delivery.map(d => {
+      if (d === 'Uber Eats') return `<span class="badge badge-uber">Uber Eats</span>`;
+      if (d === 'DoorDash') return `<span class="badge badge-dd">DoorDash</span>`;
+      if (d === 'Grubhub') return `<span class="badge badge-gh">Grubhub</span>`;
+      return '';
+    }).join('');
+
+    return `
+      <div class="restaurant-card">
+        <div class="card-top">
+          <div>
+            <div class="restaurant-name">${r.name}</div>
+            <div class="neighborhood">${r.hood}</div>
+          </div>
+          <div class="delivery-badges">${badges}</div>
+        </div>
+        <div class="divider"></div>
+        <div class="dish-section">
+          <div class="dish-icon">${r.icon}</div>
+          <div class="dish-info">
+            <div class="dish-name">${r.dish}</div>
+            <div class="dish-desc">${r.desc}</div>
+            <div class="dish-price">${r.price}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function shuffleCurrent() {
+  if (currentProtein) {
+    const cards = document.querySelectorAll('.restaurant-card');
+    cards.forEach(c => c.style.animation = 'none');
+    renderCards(currentProtein);
+    // Re-trigger animation
+    setTimeout(() => {
+      document.querySelectorAll('.restaurant-card').forEach((c, i) => {
+        c.style.animation = `scaleIn 0.4s ease-out ${0.1 + i * 0.12}s both`;
+      });
+    }, 10);
+  }
+}
+
+function goBack() {
+  document.getElementById('results').classList.remove('visible');
+  document.getElementById('selection').style.display = 'block';
+  currentProtein = null;
+}
+</script>
+</body>
+</html>
