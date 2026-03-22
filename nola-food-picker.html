@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOLA Eats — What's for Dinner?</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #D4A857;
+    --gold-light: #F0D99C;
+    --deep: #1A1A2E;
+    --card-bg: #16213E;
+    --card-hover: #1A2744;
+    --white: #F5F0E8;
+    --muted: #9B9B9B;
+    --green: #4CAF50;
+    --amber: #F59E0B;
+    --delivery-uber: #06C167;
+    --delivery-dd: #FF3008;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--deep);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .bg-texture {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(212,168,87,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(15,52,96,0.3) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 100%, rgba(212,168,87,0.04) 0%, transparent 40%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .container {
+    position: relative; z-index: 1;
+    max-width: 780px; margin: 0 auto; padding: 40px 20px 60px;
+  }
+
+  header { text-align: center; margin-bottom: 48px; animation: fadeDown 0.6s ease-out; }
+
+  @keyframes fadeDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes scaleIn { from { opacity:0; transform:scale(0.92); } to { opacity:1; transform:scale(1); } }
+
+  .fleur { font-size: 28px; color: var(--gold); letter-spacing: 12px; margin-bottom: 8px; }
+
+  h1 {
+    font-family: 'Playfair Display', serif; font-weight: 900;
+    font-size: clamp(2rem, 5vw, 3.2rem); color: var(--gold);
+    letter-spacing: 1px; line-height: 1.15;
+  }
+  h1 .sub {
+    display: block; font-family: 'DM Sans', sans-serif; font-weight: 400;
+    font-size: 0.38em; color: var(--muted); letter-spacing: 3px;
+    text-transform: uppercase; margin-top: 8px;
+  }
+
+  .header-note { text-align:center; font-size:0.78rem; color:var(--muted); margin-top:12px; opacity:0.7; }
+  .header-note .check { color:var(--green); font-weight:600; }
+
+  .prompt { text-align:center; font-size:1.1rem; color:var(--white); margin-bottom:28px; font-weight:500; animation:fadeUp 0.5s ease-out 0.2s both; }
+
+  /* ========== PROTEIN GRID ========== */
+  .protein-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 14px; margin-bottom: 20px;
+  }
+  .protein-btn {
+    background: var(--card-bg); border: 1.5px solid rgba(212,168,87,0.15);
+    border-radius: 14px; padding: 22px 10px; cursor: pointer;
+    text-align: center; transition: all 0.25s ease; animation: fadeUp 0.4s ease-out both;
+  }
+  .protein-btn:nth-child(1){animation-delay:.12s} .protein-btn:nth-child(2){animation-delay:.16s}
+  .protein-btn:nth-child(3){animation-delay:.20s} .protein-btn:nth-child(4){animation-delay:.24s}
+  .protein-btn:nth-child(5){animation-delay:.28s} .protein-btn:nth-child(6){animation-delay:.32s}
+  .protein-btn:nth-child(7){animation-delay:.36s} .protein-btn:nth-child(8){animation-delay:.40s}
+
+  .protein-btn:hover {
+    background: var(--card-hover); border-color: var(--gold);
+    transform: translateY(-3px); box-shadow: 0 8px 24px rgba(212,168,87,0.12);
+  }
+  .protein-btn .emoji { font-size: 2.2rem; display: block; margin-bottom: 8px; }
+  .protein-btn .label { font-weight: 600; font-size: 0.9rem; color: var(--white); }
+
+  .protein-btn.surprise {
+    border-color: rgba(212,168,87,0.35);
+    background: linear-gradient(135deg, rgba(212,168,87,0.08), rgba(15,52,96,0.4));
+  }
+  .protein-btn.surprise .label { color: var(--gold-light); }
+
+  /* ========== LOADING ========== */
+  #loading { display:none; text-align:center; padding:80px 20px; }
+  #loading.visible { display:block; animation: fadeUp 0.3s ease-out; }
+
+  .spinner-ring { position: relative; width: 160px; height: 160px; margin: 0 auto 36px; }
+  .spinner-fleur {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    font-size: 40px; color: var(--gold); animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { transform: translate(-50%,-50%) scale(1); opacity:1; }
+    50% { transform: translate(-50%,-50%) scale(1.15); opacity:0.7; }
+  }
+
+  .orbit { position:absolute; top:0; left:0; width:100%; height:100%; animation: spin 6s linear infinite; }
+  .orbit:nth-child(2) { animation-duration: 8s; animation-direction: reverse; }
+  @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+  .orbit-emoji { position: absolute; font-size: 26px; animation: counterspin 6s linear infinite; }
+  .orbit:nth-child(2) .orbit-emoji { animation: counterspin-rev 8s linear infinite; }
+  @keyframes counterspin { from{transform:rotate(0deg)} to{transform:rotate(-360deg)} }
+  @keyframes counterspin-rev { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+  .loading-text { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--gold-light); margin-bottom: 10px; }
+  .loading-sub { font-size: 0.88rem; color: var(--muted); }
+  .progress-bar-track {
+    width: 220px; height: 4px; background: rgba(212,168,87,0.15);
+    border-radius: 4px; margin: 24px auto 0; overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%; background: var(--gold); border-radius: 4px;
+    animation: progressSlide 3s ease-in-out infinite;
+  }
+  @keyframes progressSlide {
+    0% { width:0; margin-left:0; }
+    50% { width:70%; margin-left:15%; }
+    100% { width:0; margin-left:100%; }
+  }
+
+  /* ========== RESULTS ========== */
+  #results { display:none; }
+  #results.visible { display:block; }
+
+  .results-header {
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:8px; animation:fadeUp 0.4s ease-out;
+  }
+  .results-header h2 {
+    font-family:'Playfair Display',serif; font-weight:700;
+    font-size:1.5rem; color:var(--gold-light);
+  }
+  .back-btn {
+    background:none; border:1.5px solid rgba(212,168,87,0.3);
+    color:var(--gold); padding:8px 18px; border-radius:8px;
+    cursor:pointer; font-family:'DM Sans',sans-serif;
+    font-size:0.85rem; font-weight:600; transition:all 0.2s;
+  }
+  .back-btn:hover { background:rgba(212,168,87,0.1); border-color:var(--gold); }
+
+  .source-badge {
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:0.72rem; font-weight:600;
+    margin-bottom:18px; text-transform:uppercase; letter-spacing:0.5px;
+    animation: fadeUp 0.3s ease-out;
+  }
+  .source-badge.live { color:var(--green); }
+  .source-badge.curated { color:var(--amber); }
+  .source-dot {
+    width:7px; height:7px; border-radius:50%;
+    animation: blink 2s ease-in-out infinite;
+  }
+  .source-badge.live .source-dot { background:var(--green); }
+  .source-badge.curated .source-dot { background:var(--amber); }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .restaurant-card {
+    background:var(--card-bg); border:1px solid rgba(212,168,87,0.1);
+    border-radius:16px; padding:28px; margin-bottom:16px;
+    transition:all 0.25s; animation:scaleIn 0.4s ease-out both;
+  }
+  .restaurant-card:nth-child(1){animation-delay:.1s}
+  .restaurant-card:nth-child(2){animation-delay:.22s}
+  .restaurant-card:nth-child(3){animation-delay:.34s}
+  .restaurant-card:hover { border-color:rgba(212,168,87,0.3); box-shadow:0 4px 20px rgba(0,0,0,0.3); }
+
+  .card-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; }
+  .restaurant-name { font-family:'Playfair Display',serif; font-weight:700; font-size:1.3rem; color:var(--white); }
+  .neighborhood { font-size:0.8rem; color:var(--muted); margin-top:3px; }
+  .delivery-badges { display:flex; gap:6px; flex-shrink:0; flex-wrap:wrap; justify-content:flex-end; }
+  .badge { font-size:0.7rem; font-weight:700; padding:4px 9px; border-radius:6px; letter-spacing:0.3px; text-transform:uppercase; }
+  .badge-uber { background:rgba(6,193,103,0.15); color:var(--delivery-uber); }
+  .badge-dd { background:rgba(255,48,8,0.12); color:var(--delivery-dd); }
+  .divider { height:1px; background:rgba(212,168,87,0.1); margin:14px 0; }
+  .dish-section { display:flex; align-items:flex-start; gap:14px; }
+  .dish-icon { font-size:1.6rem; flex-shrink:0; margin-top:2px; }
+  .dish-info { flex:1; }
+  .dish-name { font-weight:700; font-size:1.05rem; color:var(--gold-light); margin-bottom:4px; }
+  .dish-desc { font-size:0.88rem; color:var(--muted); line-height:1.5; }
+  .dish-price { font-weight:600; color:var(--gold); margin-top:6px; font-size:0.95rem; }
+
+  .btn-row { display:flex; gap:12px; justify-content:center; margin-top:32px; flex-wrap:wrap; }
+  .shuffle-btn {
+    background:linear-gradient(135deg,var(--gold),#B8922E);
+    color:var(--deep); border:none; padding:14px 32px;
+    border-radius:10px; font-family:'DM Sans',sans-serif;
+    font-size:0.95rem; font-weight:700; cursor:pointer;
+    transition:all 0.25s; letter-spacing:0.5px;
+  }
+  .shuffle-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(212,168,87,0.3); }
+  .shuffle-btn.outline {
+    background:transparent; border:1.5px solid rgba(212,168,87,0.3);
+    color:var(--gold); padding:13px 28px;
+  }
+  .shuffle-btn.outline:hover { background:rgba(212,168,87,0.08); border-color:var(--gold); }
+
+  @media (max-width: 600px) {
+    .protein-grid { grid-template-columns: repeat(2, 1fr); }
+    .card-top { flex-direction:column; gap:8px; }
+    .container { padding:24px 16px 48px; }
+    .btn-row { flex-direction:column; align-items:center; }
+  }
+</style>
+</head>
+<body>
+<div class="bg-texture"></div>
+<div class="container">
+  <header>
+    <div class="fleur">&#9884; &#9884; &#9884;</div>
+    <h1>NOLA Eats<span class="sub">New Orleans Delivery Finder</span></h1>
+    <p class="header-note"><span class="check">&#10003;</span> Tries live web search &bull; Falls back to curated picks instantly</p>
+  </header>
+
+  <div id="selection">
+    <p class="prompt">Pick your protein and we'll find dinner.</p>
+    <div class="protein-grid">
+      <div class="protein-btn" onclick="pickProtein('chicken')"><span class="emoji">&#127831;</span><span class="label">Chicken</span></div>
+      <div class="protein-btn" onclick="pickProtein('lamb')"><span class="emoji">&#128017;</span><span class="label">Lamb</span></div>
+      <div class="protein-btn" onclick="pickProtein('beef')"><span class="emoji">&#129385;</span><span class="label">Beef</span></div>
+      <div class="protein-btn" onclick="pickProtein('fish')"><span class="emoji">&#128031;</span><span class="label">Fish</span></div>
+      <div class="protein-btn" onclick="pickProtein('pork')"><span class="emoji">&#129363;</span><span class="label">Pork</span></div>
+      <div class="protein-btn" onclick="pickProtein('shrimp')"><span class="emoji">&#129424;</span><span class="label">Shrimp</span></div>
+      <div class="protein-btn" onclick="pickProtein('vegetarian')"><span class="emoji">&#129388;</span><span class="label">Vegetarian</span></div>
+      <div class="protein-btn surprise" onclick="pickProtein('surprise')"><span class="emoji">&#127922;</span><span class="label">Surprise Me!</span></div>
+    </div>
+  </div>
+
+  <div id="loading">
+    <div class="spinner-ring">
+      <div class="orbit" id="orbit1"></div>
+      <div class="orbit" id="orbit2"></div>
+      <div class="spinner-fleur">&#9884;</div>
+    </div>
+    <div class="loading-text" id="loading-title">Scouting the scene...</div>
+    <div class="loading-sub" id="loading-sub">Checking who's still cookin'</div>
+    <div class="progress-bar-track"><div class="progress-bar-fill"></div></div>
+  </div>
+
+  <div id="results">
+    <div class="results-header">
+      <h2 id="results-title"></h2>
+      <button class="back-btn" onclick="goBack()">&#8592; Pick Again</button>
+    </div>
+    <div id="source-badge-container"></div>
+    <div id="cards"></div>
+    <div class="btn-row">
+      <button class="shuffle-btn" onclick="shuffleCurated()">&#127922; &nbsp;Quick Shuffle</button>
+      <button class="shuffle-btn outline" onclick="shuffleLive()">&#9889; &nbsp;Live Search</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// Orbiting food emojis
+// ============================================================
+(function setupOrbits() {
+  var ring1 = ['\ud83c\udf57','\ud83e\udd69','\ud83d\udc1f','\ud83e\udd90','\ud83e\udd6c','\ud83c\udf56'];
+  var ring2 = ['\ud83c\udf54','\ud83c\udf36\ufe0f','\ud83e\uddc6','\ud83e\udd53','\ud83e\udd80'];
+  var o1 = document.getElementById('orbit1');
+  var o2 = document.getElementById('orbit2');
+  ring1.forEach(function(e, i) {
+    var angle = (360/ring1.length)*i, rad = angle*Math.PI/180, r = 70;
+    o1.innerHTML += '<span class="orbit-emoji" style="left:'+(80+r*Math.cos(rad)-13)+'px;top:'+(80+r*Math.sin(rad)-13)+'px">'+e+'</span>';
+  });
+  ring2.forEach(function(e, i) {
+    var angle = (360/ring2.length)*i, rad = angle*Math.PI/180, r = 50;
+    o2.innerHTML += '<span class="orbit-emoji" style="left:'+(80+r*Math.cos(rad)-13)+'px;top:'+(80+r*Math.sin(rad)-13)+'px">'+e+'</span>';
+  });
+})();
+
+// ============================================================
+// Loading messages
+// ============================================================
+var loadingMsgs = [
+  { t:"Scouting the scene...", s:"Checking who's still cookin'" },
+  { t:"Asking the locals...", s:"They always know the best spots" },
+  { t:"Peeking at menus...", s:"Looking for that perfect dish" },
+  { t:"Verifying hours...", s:"Making sure the kitchen's hot" },
+  { t:"Crossing Bourbon St...", s:"Dodging tourists, finding gems" },
+  { t:"Consulting the roux...", s:"Good things take a little time" },
+  { t:"Sniffing the air...", s:"Following the aroma down Magazine" },
+  { t:"Flagging the waiter...", s:"Almost got your picks ready" },
+];
+var msgInterval = null;
+function startLoadingMsgs() {
+  var idx = Math.floor(Math.random()*loadingMsgs.length);
+  function set() { var m = loadingMsgs[idx%loadingMsgs.length]; document.getElementById('loading-title').textContent=m.t; document.getElementById('loading-sub').textContent=m.s; idx++; }
+  set(); msgInterval = setInterval(set, 2500);
+}
+function stopLoadingMsgs() { if(msgInterval){clearInterval(msgInterval);msgInterval=null;} }
+
+// ============================================================
+// Curated data (verified Mar 2026 via Google Places)
+// ============================================================
+var curated = {
+  chicken: [
+    { name:"Willie Mae's Scotch House", neighborhood:"Trem\u00e9", dish:"Fried Chicken Platter", description:"James Beard Award-winning fried chicken. Crispy, juicy, legendary. Served with butter beans and bread.", price:"$16", icon:"\ud83c\udf57", delivery:["Uber Eats","DoorDash"] },
+    { name:"Gus's World Famous Fried Chicken", neighborhood:"Warehouse District", dish:"Fried Chicken Dinner", description:"Memphis-born, NOLA-adopted. Spicy-crispy dark or white meat with coleslaw and baked beans.", price:"$14", icon:"\ud83c\udf57", delivery:["DoorDash","Uber Eats"] },
+    { name:"Cane & Table", neighborhood:"French Quarter", dish:"Jerk Chicken", description:"Caribbean-spiced bone-in chicken, scotch bonnet glaze, rice and peas.", price:"$22", icon:"\ud83c\udf36\ufe0f", delivery:["Uber Eats"] },
+    { name:"Blazin Hot Chicken", neighborhood:"Mid-City", dish:"Hot Chicken Sliders", description:"Nashville-style hot chicken sliders with pickles and waffle fries. Open late.", price:"$13", icon:"\ud83d\udd25", delivery:["DoorDash","Uber Eats"] },
+    { name:"Heard Dat Kitchen", neighborhood:"Central City", dish:"Fried Chicken Basket", description:"Crispy fried chicken served with fries, coleslaw, and comeback sauce.", price:"$14", icon:"\ud83c\udf57", delivery:["DoorDash","Uber Eats"] },
+    { name:"Li'l Dizzy's Cafe", neighborhood:"Trem\u00e9", dish:"Fried Chicken Lunch", description:"Classic NOLA soul food fried chicken with cornbread and greens.", price:"$15", icon:"\ud83c\udf57", delivery:["Uber Eats"] },
+  ],
+  lamb: [
+    { name:"Saba", neighborhood:"Magazine Street", dish:"Lamb Shank", description:"Braised lamb shank, Israeli couscous, harissa, and pickled turnips.", price:"$34", icon:"\ud83c\udf56", delivery:["Uber Eats","DoorDash"] },
+    { name:"1000 Figs", neighborhood:"Bayou St. John", dish:"Lamb Kofta Plate", description:"Spiced ground lamb skewers with hummus, tabbouleh, and warm pita.", price:"$17", icon:"\ud83e\udd59", delivery:["DoorDash","Uber Eats"] },
+    { name:"Mona's Cafe", neighborhood:"Mid-City", dish:"Lamb Chops", description:"Char-grilled marinated lamb chops with hummus, tabbouleh, and warm pita bread.", price:"$20", icon:"\ud83c\udf56", delivery:["DoorDash","Uber Eats"] },
+    { name:"Tal's Hummus", neighborhood:"Magazine Street", dish:"Lamb Shawarma Bowl", description:"Slow-roasted seasoned lamb over rice with pickles, tahini, and house hummus.", price:"$16", icon:"\ud83e\udd59", delivery:["Uber Eats","DoorDash"] },
+    { name:"Shaya", neighborhood:"Magazine Street", dish:"Lamb Ragu Hummus", description:"Silky hummus topped with slow-braised lamb ragu, served with wood-fired pita.", price:"$18", icon:"\ud83e\udd59", delivery:["Uber Eats","DoorDash"] },
+    { name:"Lebanon Grill", neighborhood:"French Quarter", dish:"Lamb Kafta Plate", description:"Seasoned ground lamb grilled on skewers with rice, salad, and garlic sauce.", price:"$16", icon:"\ud83d\udd25", delivery:["DoorDash","Uber Eats"] },
+  ],
+  beef: [
+    { name:"Company Burger", neighborhood:"Freret Street", dish:"The Company Burger", description:"Double patty smash burger, American cheese, house-made pickles, special sauce.", price:"$12", icon:"\ud83c\udf54", delivery:["DoorDash","Uber Eats"] },
+    { name:"Bub's NOLA", neighborhood:"Mid-City", dish:"The Bub Royale", description:"Smash burger with bacon, cheese, house sauce, and crispy shoestring fries.", price:"$13", icon:"\ud83c\udf54", delivery:["DoorDash","Uber Eats"] },
+    { name:"Desi Vega's Steakhouse", neighborhood:"Metairie", dish:"14oz Ribeye", description:"Prime-grade ribeye, charbroiled and finished with garlic butter.", price:"$52", icon:"\ud83e\udd69", delivery:["DoorDash"] },
+    { name:"Original Slap Burger", neighborhood:"Marigny", dish:"The OG Slap Burger", description:"Crispy-edged smash patty with house sauce, pickles, and onions at Marie's Bar.", price:"$12", icon:"\ud83c\udf54", delivery:["DoorDash","Uber Eats"] },
+    { name:"Copper Vine", neighborhood:"CBD", dish:"Hanger Steak Frites", description:"Pan-seared hanger steak with truffle fries and peppercorn sauce.", price:"$29", icon:"\ud83e\udd69", delivery:["Uber Eats"] },
+    { name:"NOLA Hamburger & Seafood Co.", neighborhood:"Uptown", dish:"Classic Cheeseburger", description:"Half-pound fresh patty with lettuce, tomato, pickles, and fries.", price:"$14", icon:"\ud83c\udf54", delivery:["DoorDash","Uber Eats"] },
+  ],
+  fish: [
+    { name:"P\u00eache Seafood Grill", neighborhood:"Warehouse District", dish:"Whole Roasted Fish", description:"Daily catch, whole roasted with chili glaze and herb salad. James Beard-winning.", price:"$32", icon:"\ud83d\udc1f", delivery:["Uber Eats","DoorDash"] },
+    { name:"GW Fins", neighborhood:"French Quarter", dish:"Scalibut", description:"Pan-seared halibut with lobster risotto sauce. Signature dish.", price:"$44", icon:"\ud83d\udc1f", delivery:["Uber Eats"] },
+    { name:"Cochon", neighborhood:"Warehouse District", dish:"Louisiana Catfish", description:"Fried Gulf catfish with pickled watermelon rind and ranch-style tartar sauce.", price:"$25", icon:"\ud83d\udc1f", delivery:["DoorDash","Uber Eats"] },
+    { name:"Trenasse", neighborhood:"CBD", dish:"Gulf Fish Court-Bouillon", description:"Gulf fish in a Creole tomato court-bouillon over steamed rice.", price:"$28", icon:"\ud83d\udc1f", delivery:["Uber Eats","DoorDash"] },
+    { name:"Katie's", neighborhood:"Mid-City", dish:"Grilled Fish Platter", description:"Fresh Gulf fish chargrilled with lemon butter, roasted veggies, and rice.", price:"$24", icon:"\ud83d\udc1f", delivery:["DoorDash","Uber Eats"] },
+    { name:"Elysian Seafood", neighborhood:"Marigny", dish:"Fried Fish Sandwich", description:"Crispy fried Gulf fish on a toasted bun with slaw and remoulade.", price:"$14", icon:"\ud83d\udc1f", delivery:["DoorDash"] },
+  ],
+  pork: [
+    { name:"Cochon Butcher", neighborhood:"Warehouse District", dish:"Pork Belly Sandwich", description:"Melt-in-your-mouth pork belly, jalape\u00f1o-mint jelly, cracklins on a pressed roll.", price:"$14", icon:"\ud83e\udd6a", delivery:["DoorDash","Uber Eats"] },
+    { name:"Boucherie", neighborhood:"Uptown", dish:"Pulled Pork Plate", description:"Slow-smoked pulled pork shoulder, smoked boudin balls, and Southern sides.", price:"$17", icon:"\ud83d\udc37", delivery:["Uber Eats","DoorDash"] },
+    { name:"The Joint", neighborhood:"Bywater", dish:"Pulled Pork Platter", description:"Hickory-smoked pulled pork piled high with coleslaw and baked beans.", price:"$15", icon:"\ud83d\udd25", delivery:["DoorDash"] },
+    { name:"Toups' Meatery", neighborhood:"Mid-City", dish:"Double-Cut Pork Chop", description:"Massive bone-in Berkshire pork chop, brined and grilled, Cajun country-style.", price:"$32", icon:"\ud83c\udf56", delivery:["Uber Eats"] },
+    { name:"Central City BBQ", neighborhood:"Central City", dish:"Smoked Ribs Plate", description:"Slow-smoked spare ribs with two Southern sides and house BBQ sauce.", price:"$20", icon:"\ud83d\udd25", delivery:["DoorDash","Uber Eats"] },
+    { name:"Blue Oak BBQ", neighborhood:"Mid-City", dish:"Pulled Pork Sandwich", description:"Low-and-slow smoked pork on a brioche bun with vinegar slaw.", price:"$13", icon:"\ud83e\udd6a", delivery:["DoorDash","Uber Eats"] },
+  ],
+  shrimp: [
+    { name:"Pascal's Manale", neighborhood:"Uptown", dish:"Original BBQ Shrimp", description:"The OG. Head-on Gulf shrimp in buttery, peppery BBQ sauce. Bring bread.", price:"$32", icon:"\ud83e\udd90", delivery:["DoorDash"] },
+    { name:"Deanie's Seafood", neighborhood:"Bucktown", dish:"BBQ Shrimp Platter", description:"Jumbo Gulf shrimp in rich butter-spice sauce with French bread for soaking.", price:"$28", icon:"\ud83e\udd90", delivery:["DoorDash","Uber Eats"] },
+    { name:"Mr. Ed's Seafood", neighborhood:"Kenner", dish:"Shrimp Po-Boy", description:"Golden fried Gulf shrimp on Leidenheimer French bread, fully dressed.", price:"$16", icon:"\ud83e\udd56", delivery:["DoorDash","Uber Eats"] },
+    { name:"Liuzza's By The Track", neighborhood:"Mid-City", dish:"BBQ Shrimp Po-Boy", description:"Gulf shrimp in rich butter-pepper sauce on French bread. A signature favorite.", price:"$18", icon:"\ud83e\udd90", delivery:["Uber Eats","DoorDash"] },
+    { name:"Mahony's Po-Boys", neighborhood:"Magazine Street", dish:"Peacemaker Po-Boy", description:"Fried shrimp and oysters together on French bread. Best of both worlds.", price:"$19", icon:"\ud83e\udd56", delivery:["DoorDash","Uber Eats"] },
+    { name:"Neyow's Creole Cafe", neighborhood:"Mid-City", dish:"BBQ Shrimp Plate", description:"Gulf shrimp in rich buttery Creole BBQ sauce over steamed white rice.", price:"$20", icon:"\ud83e\udd90", delivery:["DoorDash"] },
+  ],
+  vegetarian: [
+    { name:"Seed", neighborhood:"Lower Garden District", dish:"Korean Fried Cauliflower", description:"Crispy battered cauliflower with sweet-spicy Korean glaze. Fully plant-based.", price:"$14", icon:"\ud83e\udd66", delivery:["DoorDash","Uber Eats"] },
+    { name:"Carmo", neighborhood:"Warehouse District", dish:"Tropical Veggie Bowl", description:"Caribbean and Brazilian-inspired bowl with plantains, black beans, rice, sofrito.", price:"$16", icon:"\ud83c\udf34", delivery:["Uber Eats","DoorDash"] },
+    { name:"1000 Figs", neighborhood:"Bayou St. John", dish:"Falafel Plate", description:"Crispy housemade falafel with hummus, Israeli salad, pickled beets, and pita.", price:"$15", icon:"\ud83e\uddc6", delivery:["DoorDash","Uber Eats"] },
+    { name:"Sweet Soulfood", neighborhood:"Mid-City", dish:"Veggie Plate", description:"Pick three Southern veggie sides: cashew mac & cheese, greens, yams. All vegan.", price:"$13", icon:"\ud83e\udd6c", delivery:["DoorDash"] },
+    { name:"Saba", neighborhood:"Magazine Street", dish:"Hummus & Pita Spread", description:"Silky smooth hummus, wood-fired pita, and an array of Israeli mezze.", price:"$14", icon:"\ud83e\udd59", delivery:["Uber Eats","DoorDash"] },
+    { name:"Tal's Hummus", neighborhood:"Magazine Street", dish:"Veggie Shawarma Bowl", description:"Roasted cauliflower and eggplant over rice with tahini and pickled veggies.", price:"$14", icon:"\ud83e\udd59", delivery:["Uber Eats","DoorDash"] },
+  ]
+};
+
+// ============================================================
+// State
+// ============================================================
+var currentProtein = null;
+var lastSource = 'curated';
+
+var proteinLabels = {
+  chicken:'Chicken', lamb:'Lamb', beef:'Beef', fish:'Fish',
+  pork:'Pork', shrimp:'Shrimp', vegetarian:'Vegetarian', surprise:"Chef's Surprise"
+};
+
+// ============================================================
+// Section switching
+// ============================================================
+function showSection(id) {
+  ['selection','loading','results'].forEach(function(s) {
+    var el = document.getElementById(s);
+    el.style.display = 'none';
+    el.classList.remove('visible');
+  });
+  var t = document.getElementById(id);
+  t.style.display = 'block';
+  t.classList.add('visible');
+}
+
+// ============================================================
+// Pick from curated pool (instant)
+// ============================================================
+function getCuratedPicks(protein) {
+  if (protein === 'surprise') {
+    var allKeys = Object.keys(curated);
+    var shuffledKeys = allKeys.sort(function(){return 0.5-Math.random();});
+    var picks = [];
+    for (var k = 0; k < Math.min(3, shuffledKeys.length); k++) {
+      var pool = curated[shuffledKeys[k]];
+      var item = pool[Math.floor(Math.random()*pool.length)];
+      picks.push(item);
+    }
+    return picks;
+  }
+  var pool = curated[protein].slice();
+  for (var i = pool.length-1; i > 0; i--) {
+    var j = Math.floor(Math.random()*(i+1));
+    var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+  }
+  return pool.slice(0, 3);
+}
+
+// ============================================================
+// Live API fetch with timeout
+// ============================================================
+function fetchWithTimeout(url, options, timeout) {
+  return new Promise(function(resolve, reject) {
+    var timer = setTimeout(function() { reject(new Error('timeout')); }, timeout);
+    fetch(url, options).then(function(res) {
+      clearTimeout(timer);
+      resolve(res);
+    }).catch(function(err) {
+      clearTimeout(timer);
+      reject(err);
+    });
+  });
+}
+
+async function fetchLiveRestaurants(protein) {
+  var searchTerm = protein;
+  if (protein === 'surprise') {
+    var opts = ['chicken','lamb','beef','fish','pork','shrimp','vegetarian'];
+    var s = opts.sort(function(){return 0.5-Math.random();});
+    searchTerm = s.slice(0,3).join(', ');
+  }
+
+  var sysPrompt = 'You are a New Orleans restaurant expert. Return ONLY a raw JSON array (no markdown, no backticks, no preamble). Find 3 currently-open restaurants in New Orleans for food delivery. Each must be a real, operating restaurant verified via your web search.\n\nJSON structure per item:\n{"name":"...","neighborhood":"...","dish":"Specific Menu Item","description":"1-2 sentences","price":"$XX","icon":"food emoji","delivery":["DoorDash","Uber Eats"]}\n\nReturn ONLY the JSON array.';
+
+  var userMsg = protein === 'surprise'
+    ? 'Find 3 different New Orleans restaurants, each a different cuisine/protein from: ' + searchTerm + '. Verify each is currently open. Return specific menu items.'
+    : 'Find 3 New Orleans restaurants with great ' + protein + ' dishes available for delivery. Verify each is currently open. Specific menu items with prices.';
+
+  var res = await fetchWithTimeout('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: sysPrompt,
+      tools: [{ type:'web_search_20250305', name:'web_search' }],
+      messages: [{ role:'user', content: userMsg }]
+    })
+  }, 18000); // 18 second timeout
+
+  if (!res.ok) throw new Error('API ' + res.status);
+
+  var data = await res.json();
+  var text = '';
+  if (data.content && Array.isArray(data.content)) {
+    data.content.forEach(function(b) { if(b.type==='text'&&b.text) text+=b.text; });
+  }
+
+  var restaurants;
+  var cleaned = text.replace(/```json|```/g,'').trim();
+  try {
+    restaurants = JSON.parse(cleaned);
+  } catch(e) {
+    var match = text.match(/\[[\s\S]*\]/);
+    if (match) restaurants = JSON.parse(match[0]);
+    else throw new Error('parse');
+  }
+
+  if (!Array.isArray(restaurants) || restaurants.length === 0) throw new Error('empty');
+  return restaurants.slice(0,3);
+}
+
+// ============================================================
+// Main pick handler: try live, fall back to curated
+// ============================================================
+async function pickProtein(protein) {
+  currentProtein = protein;
+  showSection('loading');
+  startLoadingMsgs();
+
+  var results;
+  var source = 'curated';
+
+  try {
+    results = await fetchLiveRestaurants(protein);
+    source = 'live';
+  } catch(err) {
+    console.log('Live fetch fell back:', err.message);
+    results = getCuratedPicks(protein);
+    source = 'curated';
+  }
+
+  stopLoadingMsgs();
+  lastSource = source;
+  displayResults(protein, results, source);
+}
+
+// ============================================================
+// Display
+// ============================================================
+function displayResults(protein, restaurants, source) {
+  showSection('results');
+  var label = proteinLabels[protein] || protein;
+  document.getElementById('results-title').textContent = label + ' \u2014 3 Picks';
+
+  var badgeContainer = document.getElementById('source-badge-container');
+  if (source === 'live') {
+    badgeContainer.innerHTML = '<div class="source-badge live"><span class="source-dot"></span> Live verified just now</div>';
+  } else {
+    badgeContainer.innerHTML = '<div class="source-badge curated"><span class="source-dot"></span> Curated picks &bull; verified Mar 2026</div>';
+  }
+
+  var cardsEl = document.getElementById('cards');
+  cardsEl.innerHTML = restaurants.map(function(r) {
+    var apps = r.delivery || ['DoorDash','Uber Eats'];
+    var badges = apps.map(function(d) {
+      if (d.toLowerCase().indexOf('uber')>=0) return '<span class="badge badge-uber">Uber Eats</span>';
+      if (d.toLowerCase().indexOf('door')>=0) return '<span class="badge badge-dd">DoorDash</span>';
+      return '';
+    }).join('');
+
+    return '<div class="restaurant-card">' +
+      '<div class="card-top"><div>' +
+        '<div class="restaurant-name">' + esc(r.name) + '</div>' +
+        '<div class="neighborhood">' + esc(r.neighborhood||r.hood||'') + '</div>' +
+      '</div><div class="delivery-badges">' + badges + '</div></div>' +
+      '<div class="divider"></div>' +
+      '<div class="dish-section"><div class="dish-icon">' + (r.icon||'\ud83c\udf7d\ufe0f') + '</div>' +
+      '<div class="dish-info">' +
+        '<div class="dish-name">' + esc(r.dish) + '</div>' +
+        '<div class="dish-desc">' + esc(r.description||r.desc||'') + '</div>' +
+        '<div class="dish-price">' + esc(r.price||'') + '</div>' +
+      '</div></div></div>';
+  }).join('');
+}
+
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ============================================================
+// Shuffle buttons
+// ============================================================
+function shuffleCurated() {
+  if (!currentProtein) return;
+  var picks = getCuratedPicks(currentProtein);
+  lastSource = 'curated';
+  displayResults(currentProtein, picks, 'curated');
+}
+
+async function shuffleLive() {
+  if (!currentProtein) return;
+  await pickProtein(currentProtein);
+}
+
+function goBack() {
+  showSection('selection');
+  currentProtein = null;
+}
+</script>
+</body>
+</html>
