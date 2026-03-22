@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wild Game Kitchen — Duck & Pheasant Recipes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1a1714;
+    color: #f5f0e8;
+    font-family: 'Playfair Display', Georgia, serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .dm { font-family: 'DM Sans', sans-serif; }
+  .container { max-width: 680px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+  
+  /* Landing */
+  .landing {
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    padding: 2rem; position: relative;
+  }
+  .landing::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse at 30% 20%, rgba(180,120,60,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(120,80,40,0.06) 0%, transparent 60%);
+  }
+  .landing-inner { position: relative; z-index: 1; max-width: 600px; }
+  .eyebrow {
+    font-family: 'DM Sans', sans-serif; font-size: 0.75rem;
+    letter-spacing: 0.25em; text-transform: uppercase; color: #a89272; margin-bottom: 1rem;
+  }
+  .landing h1 { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 900; line-height: 1.05; margin-bottom: 0.5rem; }
+  .landing h1 em { font-weight: 400; color: #c9a96e; }
+  .subtitle { font-family: 'DM Sans', sans-serif; font-size: 1rem; color: #8a7e6e; margin-bottom: 3rem; line-height: 1.6; }
+  .bird-choices { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+  .bird-btn {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(201,169,110,0.2);
+    border-radius: 16px; padding: 2.5rem; cursor: pointer; color: #f5f0e8;
+    text-align: center; transition: all 0.3s ease; width: 200px; font-family: inherit;
+  }
+  .bird-btn:hover { border-color: rgba(201,169,110,0.5); background: rgba(201,169,110,0.06); transform: translateY(-4px); }
+  .bird-btn .emoji { font-size: 3rem; margin-bottom: 0.75rem; }
+  .bird-btn .name { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .bird-btn .desc { font-family: 'DM Sans', sans-serif; font-size: 0.8rem; color: #8a7e6e; }
+
+  /* Back button */
+  .back-btn {
+    background: none; border: none; color: #a89272; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+    display: inline-flex; align-items: center; gap: 6px; padding: 0; margin-bottom: 2rem;
+    transition: color 0.2s;
+  }
+  .back-btn:hover { color: #c9a96e; }
+
+  /* Recipe list */
+  .section-eyebrow {
+    font-family: 'DM Sans', sans-serif; font-size: 0.7rem;
+    letter-spacing: 0.25em; text-transform: uppercase; color: #a89272; margin-bottom: 0.5rem;
+  }
+  .section-title { font-size: clamp(2.5rem, 6vw, 3.5rem); font-weight: 900; line-height: 1.05; margin-bottom: 0.25rem; }
+  .section-sub { font-family: 'DM Sans', sans-serif; font-size: 1rem; color: #8a7e6e; margin-bottom: 2.5rem; }
+  .recipe-card {
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px; padding: 1.5rem 1.75rem; cursor: pointer; color: #f5f0e8;
+    text-align: left; transition: all 0.3s ease; display: flex;
+    justify-content: space-between; align-items: center; margin-bottom: 1rem; width: 100;
+    font-family: inherit;
+  }
+  .recipe-card:hover { border-color: rgba(201,169,110,0.3); background: rgba(201,169,110,0.04); transform: translateX(4px); }
+  .recipe-card h3 { font-size: 1.35rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .recipe-card .tagline { font-family: 'DM Sans', sans-serif; font-size: 0.85rem; color: #a89272; font-style: italic; margin-bottom: 0.5rem; }
+  .recipe-card .meta { display: flex; gap: 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.75rem; color: #6b6259; }
+  .recipe-card .meta span { display: flex; align-items: center; gap: 4px; }
+  .recipe-card .arrow { color: #a89272; margin-left: 1rem; flex-shrink: 0; }
+
+  /* Recipe detail */
+  .detail-meta { display: flex; gap: 1rem; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; }
+  .detail-meta span { font-family: 'DM Sans', sans-serif; font-size: 0.75rem; color: #6b6259; display: flex; align-items: center; gap: 4px; }
+  .detail-meta .bird-label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: #a89272; }
+  .detail-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; line-height: 1.1; margin-bottom: 0.5rem; }
+  .detail-tagline { font-family: 'DM Sans', sans-serif; font-size: 1.05rem; color: #a89272; font-style: italic; margin-bottom: 2.5rem; }
+
+  .tip-box {
+    background: rgba(201,169,110,0.06); border: 1px solid rgba(201,169,110,0.15);
+    border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 2.5rem;
+  }
+  .tip-label { font-family: 'DM Sans', sans-serif; font-size: 0.8rem; color: #c9a96e; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 0.25rem; }
+  .tip-text { font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: #c4b89a; line-height: 1.5; }
+
+  .ing-header, .step-header {
+    font-size: 0.75rem; font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.2em; text-transform: uppercase; color: #a89272;
+    margin-bottom: 1rem; font-weight: 600;
+  }
+  .ing-list {
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px; padding: 1.25rem; margin-bottom: 2.5rem;
+  }
+  .ing-item {
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: #d4cbbf;
+    padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .ing-item:last-child { border-bottom: none; }
+
+  .step {
+    display: flex; gap: 1rem; align-items: flex-start; cursor: pointer;
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 0.75rem;
+    transition: all 0.2s ease; user-select: none; -webkit-user-select: none;
+  }
+  .step.done { background: rgba(201,169,110,0.04); border-color: rgba(201,169,110,0.15); opacity: 0.6; }
+  .step-num {
+    min-width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(255,255,255,0.06); color: #8a7e6e;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 600;
+    transition: all 0.2s ease; flex-shrink: 0; margin-top: 2px;
+  }
+  .step.done .step-num { background: #a89272; color: #1a1714; }
+  .step-text { font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: #d4cbbf; line-height: 1.6; }
+  .step.done .step-text { text-decoration: line-through; }
+
+  .hidden { display: none; }
+
+  /* Clock icon inline */
+  .clock-icon { display: inline-block; vertical-align: middle; margin-right: 2px; }
+</style>
+</head>
+<body>
+
+<!-- SVG icons -->
+<svg style="display:none">
+  <symbol id="icon-clock" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M7 3.5V7l2.5 1.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="icon-arrow" viewBox="0 0 20 20"><path d="M5 10h10M11 6l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="icon-back" viewBox="0 0 18 18"><path d="M13 9H5M9 5l-4 4 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
+<!-- LANDING -->
+<div id="landing" class="landing">
+  <div class="landing-inner">
+    <p class="eyebrow">Wild Game Kitchen</p>
+    <h1>What are you<br><em>cooking?</em></h1>
+    <p class="subtitle">Pick your bird. We'll handle the rest.</p>
+    <div class="bird-choices">
+      <button class="bird-btn" onclick="showList('duck')">
+        <div class="emoji">🦆</div>
+        <div class="name">Duck</div>
+        <div class="desc">Rich, fatty, forgiving</div>
+      </button>
+      <button class="bird-btn" onclick="showList('pheasant')">
+        <div class="emoji">🐦</div>
+        <div class="name">Pheasant</div>
+        <div class="desc">Lean, delicate, wild</div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- RECIPE LIST -->
+<div id="recipe-list" class="hidden">
+  <div class="container">
+    <button class="back-btn" onclick="showLanding()">
+      <svg width="18" height="18"><use href="#icon-back"/></svg> Switch bird
+    </button>
+    <p class="section-eyebrow">Recipes for</p>
+    <h1 class="section-title" id="list-title"></h1>
+    <p class="section-sub" id="list-sub"></p>
+    <div id="list-cards"></div>
+  </div>
+</div>
+
+<!-- RECIPE DETAIL -->
+<div id="recipe-detail" class="hidden">
+  <div class="container">
+    <button class="back-btn" id="detail-back">
+      <svg width="18" height="18"><use href="#icon-back"/></svg> <span id="detail-back-label"></span>
+    </button>
+    <div class="detail-meta">
+      <span class="bird-label" id="detail-bird"></span>
+      <span id="detail-time"></span>
+      <span id="detail-diff"></span>
+    </div>
+    <h1 class="detail-title" id="detail-title"></h1>
+    <p class="detail-tagline" id="detail-tagline"></p>
+    <div class="tip-box">
+      <p class="tip-label">Pro tip</p>
+      <p class="tip-text" id="detail-tip"></p>
+    </div>
+    <p class="ing-header">Ingredients</p>
+    <div class="ing-list" id="detail-ingredients"></div>
+    <p class="step-header">Steps</p>
+    <div id="detail-steps"></div>
+  </div>
+</div>
+
+<script>
+const recipes = {
+  duck: {
+    label: "Duck",
+    sub: "Fat is your friend. Let it do the work.",
+    items: [
+      {
+        title: "Duck Leg Confit",
+        time: "3 hours", difficulty: "Easy (just patience)",
+        tagline: "Low and slow in its own fat. The gold standard.",
+        tip: "Save every drop of that cooking fat. It's liquid gold for roasting potatoes.",
+        ingredients: [
+          "4 duck legs", "3 tbsp kosher salt", "4 cloves garlic, smashed",
+          "4 sprigs fresh thyme", "2 bay leaves", "1 tsp black pepper",
+          "Duck fat (enough to submerge legs, ~3 cups)"
+        ],
+        steps: [
+          "Season duck legs generously with salt, garlic, thyme, bay leaves, and pepper. Cover and refrigerate 24–48 hours.",
+          "Preheat oven to 285°F. Rinse the cure off the legs and pat completely dry.",
+          "Place legs skin-side down in an oven-safe pot. Pour enough melted duck fat to just cover them.",
+          "Cover tightly and cook for 2.5–3 hours until the meat is fall-off-the-bone tender.",
+          "To serve, pull legs from the fat and sear skin-side down in a ripping hot cast iron skillet for 3–4 minutes until the skin is deeply golden and crackling.",
+          "Serve over lentils, with a frisée salad, or honestly just eat it with your hands."
+        ]
+      },
+      {
+        title: "Pan-Seared Duck Breast",
+        time: "30 minutes", difficulty: "Medium",
+        tagline: "Score the skin. Start cold. Render patiently. Perfection.",
+        tip: "The #1 mistake is starting in a hot pan. Cold start = perfect render.",
+        ingredients: [
+          "2 duck breasts", "Kosher salt & black pepper", "2 tbsp honey",
+          "2 tbsp soy sauce", "1 tbsp rice vinegar", "1 tsp fresh ginger, grated",
+          "Pinch of red pepper flakes"
+        ],
+        steps: [
+          "Score the duck skin in a crosshatch pattern, cutting through the fat but not into the meat. Season both sides generously with salt and pepper.",
+          "Place breasts skin-side down in a COLD cast iron skillet. Turn heat to medium-low.",
+          "Render for 12–15 minutes, pouring off the fat periodically. Don't rush this — low and slow gets the skin crispy without overcooking the meat.",
+          "While rendering, whisk together honey, soy, rice vinegar, ginger, and pepper flakes.",
+          "Once skin is deep golden and crispy, flip and cook flesh-side down for 3–4 minutes for medium-rare (130°F internal).",
+          "Rest 5 minutes, then slice against the grain. Drizzle with the glaze."
+        ]
+      },
+      {
+        title: "Duck & Andouille Gumbo",
+        time: "2.5 hours", difficulty: "Medium",
+        tagline: "NOLA in a bowl. Dark roux, whole duck, andouille.",
+        tip: "The roux is the whole ballgame. Dark chocolate color, no burnt specks. If you see black flecks, start over.",
+        ingredients: [
+          "1 whole duck, broken down (or 4 legs + carcass)", "1 lb andouille sausage, sliced",
+          "1 cup all-purpose flour", "1 cup duck fat or vegetable oil",
+          "2 cups onion, diced", "1 cup celery, diced", "1 cup bell pepper, diced",
+          "6 cloves garlic, minced", "2 quarts duck or chicken stock",
+          "2 bay leaves, thyme, cayenne, filé powder", "Cooked white rice for serving"
+        ],
+        steps: [
+          "Season and sear the duck pieces in a Dutch oven until browned. Remove and set aside.",
+          "Make your roux: combine flour and fat over medium heat, stirring CONSTANTLY for 30–45 minutes until it's the color of dark chocolate and smells like roasted nuts. Do not walk away.",
+          "Add the trinity (onion, celery, bell pepper) to the roux. Stir for 5 minutes until softened.",
+          "Add garlic, cook 1 minute. Add stock gradually while stirring.",
+          "Return duck to the pot. Add bay leaves, thyme, cayenne. Bring to a boil, then reduce to a simmer.",
+          "Cook 1.5 hours until duck is tender. Pull the meat off the bones, return meat to pot.",
+          "Add andouille, simmer another 20 minutes. Season to taste.",
+          "Serve over rice with a sprinkle of filé powder and hot sauce on the table."
+        ]
+      }
+    ]
+  },
+  pheasant: {
+    label: "Pheasant",
+    sub: "Lean and wild. Treat it gently.",
+    items: [
+      {
+        title: "Bacon-Wrapped Roast Pheasant",
+        time: "1 hour", difficulty: "Easy",
+        tagline: "Bacon does the heavy lifting. Keeps it juicy, adds smoke.",
+        tip: "Pheasant is lean. Without the bacon, you're gambling. Don't gamble.",
+        ingredients: [
+          "1 whole pheasant", "8–10 slices thick-cut bacon", "4 tbsp butter, softened",
+          "4 sprigs fresh thyme", "2 sprigs rosemary", "1 lemon, halved",
+          "Kosher salt & black pepper", "1 cup chicken stock"
+        ],
+        steps: [
+          "Preheat oven to 425°F. Pat pheasant completely dry inside and out.",
+          "Rub softened butter all over the bird, getting under the skin where you can. Season aggressively with salt and pepper.",
+          "Stuff the cavity with lemon halves, thyme, and rosemary.",
+          "Drape bacon slices over the breast and legs, overlapping slightly. Tuck ends underneath.",
+          "Place in a roasting pan, pour stock in the bottom. Roast 20 minutes at 425°F.",
+          "Drop temp to 375°F and roast another 25–30 minutes until thigh reaches 165°F. Remove bacon for the last 10 minutes if you want browner skin underneath.",
+          "Rest 10 minutes before carving. Spoon pan juices over everything."
+        ]
+      },
+      {
+        title: "Braised Pheasant with Cider & Apples",
+        time: "2 hours", difficulty: "Easy",
+        tagline: "Fall-apart tender in a sweet, savory cider bath.",
+        tip: "The cider + Dijon + cream sauce is the star. You'll want to drink it.",
+        ingredients: [
+          "1 pheasant, broken into pieces (or 4 legs)", "2 tbsp butter", "2 tbsp olive oil",
+          "2 shallots, sliced", "2 apples (Honeycrisp or Granny Smith), cored and quartered",
+          "2 cups dry hard cider", "1 cup chicken stock", "2 tbsp Dijon mustard",
+          "4 sprigs thyme", "½ cup heavy cream", "Salt & pepper"
+        ],
+        steps: [
+          "Season pheasant pieces generously. Sear in butter and oil over medium-high heat until golden brown on all sides. Remove and set aside.",
+          "Drop heat to medium. Add shallots, cook until softened, about 3 minutes.",
+          "Add apple quarters and cook until they pick up some color, about 4 minutes.",
+          "Deglaze with hard cider, scraping up all the fond. Let it reduce by half.",
+          "Add stock, mustard, and thyme. Return pheasant to the pan, nestling it in.",
+          "Cover and braise in a 325°F oven for 1–1.5 hours until the meat is tender and pulling from the bone.",
+          "Remove pheasant and apples. Place pan on stovetop, stir in cream, and reduce sauce until it coats a spoon.",
+          "Pour sauce over pheasant and apples. Serve with crusty bread or mashed potatoes."
+        ]
+      },
+      {
+        title: "Buttermilk Fried Pheasant",
+        time: "1.5 hours (plus overnight soak)", difficulty: "Medium",
+        tagline: "Like fried chicken's cooler, wilder cousin.",
+        tip: "325°F, not 350°F. Lower temp gives you a longer cook window so the lean meat stays juicy inside.",
+        ingredients: [
+          "1 pheasant, broken into pieces", "2 cups buttermilk", "1 tbsp hot sauce",
+          "2 cups all-purpose flour", "1 tbsp smoked paprika", "1 tsp garlic powder",
+          "1 tsp onion powder", "1 tsp cayenne pepper", "Kosher salt & black pepper",
+          "Peanut or vegetable oil for frying"
+        ],
+        steps: [
+          "Soak pheasant pieces in buttermilk and hot sauce overnight (minimum 4 hours). This tenderizes the lean meat.",
+          "Combine flour, paprika, garlic powder, onion powder, cayenne, salt, and pepper in a large bowl.",
+          "Heat 2 inches of oil in a cast iron skillet or Dutch oven to 325°F. Lower temp than chicken — pheasant is leaner and dries out faster.",
+          "Pull pheasant from buttermilk, let excess drip off. Dredge thoroughly in seasoned flour, pressing it in. Let sit on a rack 10 minutes for the coating to set.",
+          "Fry in batches, 6–8 minutes per side for legs/thighs, 5–6 for breast pieces. Internal temp should hit 165°F.",
+          "Drain on a wire rack. Hit with a pinch of flaky salt immediately.",
+          "Rest 5 minutes. Serve with honey, hot honey, or Crystal on the side."
+        ]
+      }
+    ]
+  }
+};
+
+let currentBird = null;
+
+function showLanding() {
+  document.getElementById('landing').classList.remove('hidden');
+  document.getElementById('recipe-list').classList.add('hidden');
+  document.getElementById('recipe-detail').classList.add('hidden');
+  window.scrollTo(0, 0);
+}
+
+function showList(bird) {
+  currentBird = bird;
+  const data = recipes[bird];
+  document.getElementById('landing').classList.add('hidden');
+  document.getElementById('recipe-detail').classList.add('hidden');
+  document.getElementById('recipe-list').classList.remove('hidden');
+  document.getElementById('list-title').textContent = data.label;
+  document.getElementById('list-sub').textContent = data.sub;
+
+  const container = document.getElementById('list-cards');
+  container.innerHTML = '';
+  data.items.forEach((r, i) => {
+    const card = document.createElement('button');
+    card.className = 'recipe-card';
+    card.onclick = () => showDetail(bird, i);
+    card.innerHTML = `
+      <div style="flex:1">
+        <h3>${r.title}</h3>
+        <p class="tagline">${r.tagline}</p>
+        <div class="meta">
+          <span><svg width="14" height="14" class="clock-icon"><use href="#icon-clock"/></svg> ${r.time}</span>
+          <span>${r.difficulty}</span>
+        </div>
+      </div>
+      <div class="arrow"><svg width="20" height="20"><use href="#icon-arrow"/></svg></div>
+    `;
+    container.appendChild(card);
+  });
+  window.scrollTo(0, 0);
+}
+
+function showDetail(bird, index) {
+  const data = recipes[bird];
+  const r = data.items[index];
+  document.getElementById('landing').classList.add('hidden');
+  document.getElementById('recipe-list').classList.add('hidden');
+  document.getElementById('recipe-detail').classList.remove('hidden');
+
+  document.getElementById('detail-back').onclick = () => showList(bird);
+  document.getElementById('detail-back-label').textContent = `Back to ${data.label} recipes`;
+  document.getElementById('detail-bird').textContent = data.label;
+  document.getElementById('detail-time').innerHTML = `<svg width="14" height="14" class="clock-icon"><use href="#icon-clock"/></svg> ${r.time}`;
+  document.getElementById('detail-diff').textContent = r.difficulty;
+  document.getElementById('detail-title').textContent = r.title;
+  document.getElementById('detail-tagline').textContent = r.tagline;
+  document.getElementById('detail-tip').textContent = r.tip;
+
+  const ingContainer = document.getElementById('detail-ingredients');
+  ingContainer.innerHTML = r.ingredients.map(ing => `<div class="ing-item">${ing}</div>`).join('');
+
+  const stepContainer = document.getElementById('detail-steps');
+  stepContainer.innerHTML = '';
+  r.steps.forEach((s, i) => {
+    const step = document.createElement('div');
+    step.className = 'step';
+    step.innerHTML = `<div class="step-num">${i + 1}</div><p class="step-text">${s}</p>`;
+    step.onclick = () => {
+      step.classList.toggle('done');
+      const num = step.querySelector('.step-num');
+      num.textContent = step.classList.contains('done') ? '✓' : (i + 1);
+    };
+    stepContainer.appendChild(step);
+  });
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
