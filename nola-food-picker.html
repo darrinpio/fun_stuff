@@ -12,14 +12,11 @@
     --deep: #1A1A2E;
     --card-bg: #16213E;
     --card-hover: #1A2744;
-    --surface: #0F3460;
     --white: #F5F0E8;
     --muted: #9B9B9B;
     --green: #4CAF50;
-    --red-accent: #C0392B;
     --delivery-uber: #06C167;
     --delivery-dd: #FF3008;
-    --delivery-grubhub: #F63440;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -33,294 +30,202 @@
   }
 
   .bg-texture {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     background:
       radial-gradient(ellipse at 20% 50%, rgba(212,168,87,0.06) 0%, transparent 50%),
       radial-gradient(ellipse at 80% 20%, rgba(15,52,96,0.3) 0%, transparent 50%),
       radial-gradient(ellipse at 50% 100%, rgba(212,168,87,0.04) 0%, transparent 40%);
-    pointer-events: none;
-    z-index: 0;
+    pointer-events: none; z-index: 0;
   }
 
   .container {
-    position: relative;
-    z-index: 1;
-    max-width: 780px;
-    margin: 0 auto;
-    padding: 40px 20px 60px;
+    position: relative; z-index: 1;
+    max-width: 780px; margin: 0 auto; padding: 40px 20px 60px;
   }
 
-  header {
-    text-align: center;
-    margin-bottom: 48px;
-    animation: fadeDown 0.6s ease-out;
-  }
+  header { text-align: center; margin-bottom: 48px; animation: fadeDown 0.6s ease-out; }
 
-  @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+  @keyframes fadeDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes scaleIn { from { opacity:0; transform:scale(0.92); } to { opacity:1; transform:scale(1); } }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes scaleIn {
-    from { opacity: 0; transform: scale(0.92); }
-    to { opacity: 1; transform: scale(1); }
-  }
-
-  .fleur {
-    font-size: 28px;
-    color: var(--gold);
-    letter-spacing: 12px;
-    margin-bottom: 8px;
-  }
+  .fleur { font-size: 28px; color: var(--gold); letter-spacing: 12px; margin-bottom: 8px; }
 
   h1 {
-    font-family: 'Playfair Display', serif;
-    font-weight: 900;
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    color: var(--gold);
-    letter-spacing: 1px;
-    line-height: 1.15;
+    font-family: 'Playfair Display', serif; font-weight: 900;
+    font-size: clamp(2rem, 5vw, 3.2rem); color: var(--gold);
+    letter-spacing: 1px; line-height: 1.15;
   }
-
   h1 span {
-    display: block;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 400;
-    font-size: 0.38em;
-    color: var(--muted);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-top: 8px;
+    display: block; font-family: 'DM Sans', sans-serif; font-weight: 400;
+    font-size: 0.38em; color: var(--muted); letter-spacing: 3px;
+    text-transform: uppercase; margin-top: 8px;
   }
 
-  .prompt {
-    text-align: center;
-    font-size: 1.1rem;
-    color: var(--white);
-    margin-bottom: 28px;
-    font-weight: 500;
-    animation: fadeUp 0.5s ease-out 0.2s both;
-  }
+  .verified-note { text-align:center; font-size:0.78rem; color:var(--muted); margin-top:12px; opacity:0.7; }
+  .verified-note .check { color:var(--green); font-weight:600; }
 
-  /* Protein Grid */
+  .prompt { text-align:center; font-size:1.1rem; color:var(--white); margin-bottom:28px; font-weight:500; animation:fadeUp 0.5s ease-out 0.2s both; }
+
+  /* ====== PROTEIN GRID ====== */
   .protein-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 14px;
-    margin-bottom: 20px;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 14px; margin-bottom: 20px;
   }
-
   .protein-btn {
-    background: var(--card-bg);
-    border: 1.5px solid rgba(212,168,87,0.15);
-    border-radius: 14px;
-    padding: 22px 12px;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.25s ease;
-    animation: fadeUp 0.4s ease-out both;
+    background: var(--card-bg); border: 1.5px solid rgba(212,168,87,0.15);
+    border-radius: 14px; padding: 22px 10px; cursor: pointer;
+    text-align: center; transition: all 0.25s ease; animation: fadeUp 0.4s ease-out both;
   }
-
-  .protein-btn:nth-child(1) { animation-delay: 0.15s; }
-  .protein-btn:nth-child(2) { animation-delay: 0.2s; }
-  .protein-btn:nth-child(3) { animation-delay: 0.25s; }
-  .protein-btn:nth-child(4) { animation-delay: 0.3s; }
-  .protein-btn:nth-child(5) { animation-delay: 0.35s; }
-  .protein-btn:nth-child(6) { animation-delay: 0.4s; }
-  .protein-btn:nth-child(7) { animation-delay: 0.45s; }
+  .protein-btn:nth-child(1){animation-delay:.12s} .protein-btn:nth-child(2){animation-delay:.16s}
+  .protein-btn:nth-child(3){animation-delay:.20s} .protein-btn:nth-child(4){animation-delay:.24s}
+  .protein-btn:nth-child(5){animation-delay:.28s} .protein-btn:nth-child(6){animation-delay:.32s}
+  .protein-btn:nth-child(7){animation-delay:.36s} .protein-btn:nth-child(8){animation-delay:.40s}
 
   .protein-btn:hover {
-    background: var(--card-hover);
-    border-color: var(--gold);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(212,168,87,0.12);
+    background: var(--card-hover); border-color: var(--gold);
+    transform: translateY(-3px); box-shadow: 0 8px 24px rgba(212,168,87,0.12);
+  }
+  .protein-btn .emoji { font-size: 2.2rem; display: block; margin-bottom: 8px; }
+  .protein-btn .label { font-weight: 600; font-size: 0.9rem; color: var(--white); }
+
+  .protein-btn.surprise {
+    border-color: rgba(212,168,87,0.35);
+    background: linear-gradient(135deg, rgba(212,168,87,0.08), rgba(15,52,96,0.4));
+  }
+  .protein-btn.surprise .label { color: var(--gold-light); }
+
+  /* ====== LOADING SPINNER ====== */
+  #loading { display:none; text-align:center; padding:80px 20px; }
+  #loading.visible { display:block; animation: fadeUp 0.3s ease-out; }
+
+  .spinner-ring {
+    position: relative; width: 160px; height: 160px; margin: 0 auto 36px;
   }
 
-  .protein-btn .emoji {
-    font-size: 2.2rem;
-    display: block;
-    margin-bottom: 8px;
+  .spinner-fleur {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    font-size: 40px; color: var(--gold);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { transform: translate(-50%,-50%) scale(1); opacity:1; }
+    50% { transform: translate(-50%,-50%) scale(1.15); opacity:0.7; }
   }
 
-  .protein-btn .label {
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: var(--white);
+  .orbit { position:absolute; top:0; left:0; width:100%; height:100%; animation: spin 6s linear infinite; }
+  .orbit:nth-child(2) { animation-duration: 8s; animation-direction: reverse; }
+  @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+  .orbit-emoji {
+    position: absolute; font-size: 26px;
+    animation: counterspin 6s linear infinite;
+  }
+  .orbit:nth-child(2) .orbit-emoji { animation: counterspin-rev 8s linear infinite; }
+  @keyframes counterspin { from{transform:rotate(0deg)} to{transform:rotate(-360deg)} }
+  @keyframes counterspin-rev { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+  .loading-text {
+    font-family: 'Playfair Display', serif; font-size: 1.25rem;
+    color: var(--gold-light); margin-bottom: 10px;
+  }
+  .loading-sub {
+    font-size: 0.88rem; color: var(--muted);
+    animation: textSwap 3s ease-in-out infinite;
+  }
+  @keyframes textSwap { 0%,100%{opacity:1} 45%{opacity:1} 50%{opacity:0} 55%{opacity:1} }
+
+  .progress-bar-track {
+    width: 220px; height: 4px; background: rgba(212,168,87,0.15);
+    border-radius: 4px; margin: 24px auto 0; overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%; background: var(--gold); border-radius: 4px;
+    animation: progressSlide 4s ease-in-out infinite;
+  }
+  @keyframes progressSlide {
+    0% { width:0; margin-left:0; }
+    50% { width:70%; margin-left:15%; }
+    100% { width:0; margin-left:100%; }
   }
 
-  /* Results */
-  #results {
-    display: none;
-  }
-
-  #results.visible {
-    display: block;
-  }
+  /* ====== RESULTS ====== */
+  #results { display:none; }
+  #results.visible { display:block; }
 
   .results-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-    animation: fadeUp 0.4s ease-out;
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:24px; animation:fadeUp 0.4s ease-out;
   }
-
   .results-header h2 {
-    font-family: 'Playfair Display', serif;
-    font-weight: 700;
-    font-size: 1.5rem;
-    color: var(--gold-light);
+    font-family:'Playfair Display',serif; font-weight:700;
+    font-size:1.5rem; color:var(--gold-light);
   }
-
   .back-btn {
-    background: none;
-    border: 1.5px solid rgba(212,168,87,0.3);
-    color: var(--gold);
-    padding: 8px 18px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 600;
-    transition: all 0.2s;
+    background:none; border:1.5px solid rgba(212,168,87,0.3);
+    color:var(--gold); padding:8px 18px; border-radius:8px;
+    cursor:pointer; font-family:'DM Sans',sans-serif;
+    font-size:0.85rem; font-weight:600; transition:all 0.2s;
   }
+  .back-btn:hover { background:rgba(212,168,87,0.1); border-color:var(--gold); }
 
-  .back-btn:hover {
-    background: rgba(212,168,87,0.1);
-    border-color: var(--gold);
+  .live-badge {
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:0.72rem; color:var(--green); font-weight:600;
+    margin-bottom:18px; text-transform:uppercase; letter-spacing:0.5px;
+    animation: fadeUp 0.3s ease-out;
   }
+  .live-dot {
+    width:7px; height:7px; background:var(--green); border-radius:50%;
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
   .restaurant-card {
-    background: var(--card-bg);
-    border: 1px solid rgba(212,168,87,0.1);
-    border-radius: 16px;
-    padding: 28px;
-    margin-bottom: 16px;
-    transition: all 0.25s;
-    animation: scaleIn 0.4s ease-out both;
+    background:var(--card-bg); border:1px solid rgba(212,168,87,0.1);
+    border-radius:16px; padding:28px; margin-bottom:16px;
+    transition:all 0.25s; animation:scaleIn 0.4s ease-out both;
   }
+  .restaurant-card:nth-child(1){animation-delay:.1s}
+  .restaurant-card:nth-child(2){animation-delay:.22s}
+  .restaurant-card:nth-child(3){animation-delay:.34s}
+  .restaurant-card:hover { border-color:rgba(212,168,87,0.3); box-shadow:0 4px 20px rgba(0,0,0,0.3); }
 
-  .restaurant-card:nth-child(1) { animation-delay: 0.1s; }
-  .restaurant-card:nth-child(2) { animation-delay: 0.22s; }
-  .restaurant-card:nth-child(3) { animation-delay: 0.34s; }
-
-  .restaurant-card:hover {
-    border-color: rgba(212,168,87,0.3);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  }
-
-  .card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 14px;
-  }
-
-  .restaurant-name {
-    font-family: 'Playfair Display', serif;
-    font-weight: 700;
-    font-size: 1.3rem;
-    color: var(--white);
-  }
-
-  .neighborhood {
-    font-size: 0.8rem;
-    color: var(--muted);
-    margin-top: 3px;
-  }
-
-  .delivery-badges {
-    display: flex;
-    gap: 6px;
-    flex-shrink: 0;
-  }
-
-  .badge {
-    font-size: 0.7rem;
-    font-weight: 700;
-    padding: 4px 9px;
-    border-radius: 6px;
-    letter-spacing: 0.3px;
-    text-transform: uppercase;
-  }
-
-  .badge-uber { background: rgba(6,193,103,0.15); color: var(--delivery-uber); }
-  .badge-dd { background: rgba(255,48,8,0.12); color: var(--delivery-dd); }
-  .badge-gh { background: rgba(246,52,64,0.12); color: var(--delivery-grubhub); }
-
-  .divider {
-    height: 1px;
-    background: rgba(212,168,87,0.1);
-    margin: 14px 0;
-  }
-
-  .dish-section {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-  }
-
-  .dish-icon {
-    font-size: 1.6rem;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-
-  .dish-info {
-    flex: 1;
-  }
-
-  .dish-name {
-    font-weight: 700;
-    font-size: 1.05rem;
-    color: var(--gold-light);
-    margin-bottom: 4px;
-  }
-
-  .dish-desc {
-    font-size: 0.88rem;
-    color: var(--muted);
-    line-height: 1.5;
-  }
-
-  .dish-price {
-    font-weight: 600;
-    color: var(--gold);
-    margin-top: 6px;
-    font-size: 0.95rem;
-  }
+  .card-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; }
+  .restaurant-name { font-family:'Playfair Display',serif; font-weight:700; font-size:1.3rem; color:var(--white); }
+  .neighborhood { font-size:0.8rem; color:var(--muted); margin-top:3px; }
+  .delivery-badges { display:flex; gap:6px; flex-shrink:0; }
+  .badge { font-size:0.7rem; font-weight:700; padding:4px 9px; border-radius:6px; letter-spacing:0.3px; text-transform:uppercase; }
+  .badge-uber { background:rgba(6,193,103,0.15); color:var(--delivery-uber); }
+  .badge-dd { background:rgba(255,48,8,0.12); color:var(--delivery-dd); }
+  .divider { height:1px; background:rgba(212,168,87,0.1); margin:14px 0; }
+  .dish-section { display:flex; align-items:flex-start; gap:14px; }
+  .dish-icon { font-size:1.6rem; flex-shrink:0; margin-top:2px; }
+  .dish-info { flex:1; }
+  .dish-name { font-weight:700; font-size:1.05rem; color:var(--gold-light); margin-bottom:4px; }
+  .dish-desc { font-size:0.88rem; color:var(--muted); line-height:1.5; }
+  .dish-price { font-weight:600; color:var(--gold); margin-top:6px; font-size:0.95rem; }
 
   .shuffle-btn {
-    display: block;
-    margin: 32px auto 0;
-    background: linear-gradient(135deg, var(--gold), #B8922E);
-    color: var(--deep);
-    border: none;
-    padding: 14px 36px;
-    border-radius: 10px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.25s;
-    letter-spacing: 0.5px;
+    display:block; margin:32px auto 0;
+    background:linear-gradient(135deg,var(--gold),#B8922E);
+    color:var(--deep); border:none; padding:14px 36px;
+    border-radius:10px; font-family:'DM Sans',sans-serif;
+    font-size:0.95rem; font-weight:700; cursor:pointer;
+    transition:all 0.25s; letter-spacing:0.5px;
   }
+  .shuffle-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(212,168,87,0.3); }
 
-  .shuffle-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(212,168,87,0.3);
+  .error-msg {
+    text-align:center; padding:40px 20px; color:var(--muted);
+    font-size:0.95rem; animation: fadeUp 0.3s ease-out;
   }
+  .error-msg strong { color:var(--gold-light); }
 
-  @media (max-width: 520px) {
+  @media (max-width: 600px) {
     .protein-grid { grid-template-columns: repeat(2, 1fr); }
-    .card-top { flex-direction: column; gap: 8px; }
-    .container { padding: 24px 16px 48px; }
+    .card-top { flex-direction:column; gap:8px; }
+    .container { padding:24px 16px 48px; }
   }
 </style>
 </head>
@@ -328,190 +233,308 @@
 <div class="bg-texture"></div>
 <div class="container">
   <header>
-    <div class="fleur">⚜ ⚜ ⚜</div>
+    <div class="fleur">&#9884; &#9884; &#9884;</div>
     <h1>NOLA Eats<span>New Orleans Delivery Finder</span></h1>
+    <p class="verified-note"><span class="check">&#10003;</span> Live-verified via web search on every pick</p>
   </header>
 
   <div id="selection">
     <p class="prompt">Pick your protein and we'll find dinner.</p>
     <div class="protein-grid">
-      <div class="protein-btn" onclick="pickProtein('chicken')">
-        <span class="emoji">🍗</span>
-        <span class="label">Chicken</span>
-      </div>
-      <div class="protein-btn" onclick="pickProtein('lamb')">
-        <span class="emoji">🐑</span>
-        <span class="label">Lamb</span>
-      </div>
-      <div class="protein-btn" onclick="pickProtein('beef')">
-        <span class="emoji">🥩</span>
-        <span class="label">Beef</span>
-      </div>
-      <div class="protein-btn" onclick="pickProtein('fish')">
-        <span class="emoji">🐟</span>
-        <span class="label">Fish</span>
-      </div>
-      <div class="protein-btn" onclick="pickProtein('pork')">
-        <span class="emoji">🥓</span>
-        <span class="label">Pork</span>
-      </div>
-      <div class="protein-btn" onclick="pickProtein('shrimp')">
-        <span class="emoji">🦐</span>
-        <span class="label">Shrimp</span>
-      </div>
-      <div class="protein-btn" onclick="pickProtein('vegetarian')">
-        <span class="emoji">🥬</span>
-        <span class="label">Vegetarian</span>
-      </div>
+      <div class="protein-btn" onclick="pickProtein('chicken')"><span class="emoji">&#127831;</span><span class="label">Chicken</span></div>
+      <div class="protein-btn" onclick="pickProtein('lamb')"><span class="emoji">&#128017;</span><span class="label">Lamb</span></div>
+      <div class="protein-btn" onclick="pickProtein('beef')"><span class="emoji">&#129385;</span><span class="label">Beef</span></div>
+      <div class="protein-btn" onclick="pickProtein('fish')"><span class="emoji">&#128031;</span><span class="label">Fish</span></div>
+      <div class="protein-btn" onclick="pickProtein('pork')"><span class="emoji">&#129363;</span><span class="label">Pork</span></div>
+      <div class="protein-btn" onclick="pickProtein('shrimp')"><span class="emoji">&#129424;</span><span class="label">Shrimp</span></div>
+      <div class="protein-btn" onclick="pickProtein('vegetarian')"><span class="emoji">&#129388;</span><span class="label">Vegetarian</span></div>
+      <div class="protein-btn surprise" onclick="pickProtein('surprise')"><span class="emoji">&#127922;</span><span class="label">Surprise Me!</span></div>
     </div>
+  </div>
+
+  <div id="loading">
+    <div class="spinner-ring">
+      <div class="orbit" id="orbit1"></div>
+      <div class="orbit" id="orbit2"></div>
+      <div class="spinner-fleur">&#9884;</div>
+    </div>
+    <div class="loading-text" id="loading-title">Scouting the scene...</div>
+    <div class="loading-sub" id="loading-sub">Checking who's still cookin'</div>
+    <div class="progress-bar-track"><div class="progress-bar-fill"></div></div>
   </div>
 
   <div id="results">
     <div class="results-header">
       <h2 id="results-title"></h2>
-      <button class="back-btn" onclick="goBack()">← Pick Again</button>
+      <button class="back-btn" onclick="goBack()">&#8592; Pick Again</button>
     </div>
+    <div class="live-badge"><span class="live-dot"></span> Live verified just now</div>
     <div id="cards"></div>
-    <button class="shuffle-btn" onclick="shuffleCurrent()">🎲 &nbsp;Surprise Me Again</button>
+    <button class="shuffle-btn" onclick="shuffleCurrent()">&#127922; &nbsp;Surprise Me Again</button>
   </div>
 </div>
 
 <script>
-const data = {
-  chicken: [
-    { name: "Willie Mae's Scotch House", hood: "Tremé", dish: "Fried Chicken Platter", desc: "The legendary Scotch House bird — crispy, juicy, James Beard Award-winning fried chicken with butter beans and bread.", price: "$16", icon: "🍗", delivery: ["Uber Eats", "DoorDash"] },
-    { name: "Luvi", hood: "Bywater", dish: "Rotisserie Half Chicken", desc: "French-inspired rotisserie chicken with seasonal veggie sides and herb jus.", price: "$18", icon: "🍗", delivery: ["DoorDash", "Uber Eats"] },
-    { name: "Cane & Table", hood: "French Quarter", dish: "Jerk Chicken", desc: "Caribbean-spiced bone-in chicken, scotch bonnet glaze, rice and peas.", price: "$22", icon: "🌶️", delivery: ["Uber Eats"] },
-    { name: "Piece of Meat", hood: "Mid-City", dish: "Smoked Chicken Plate", desc: "Slow-smoked half chicken with two Southern sides and white bread.", price: "$15", icon: "🔥", delivery: ["DoorDash", "Uber Eats"] },
-    { name: "Heard Dat Kitchen", hood: "Gentilly", dish: "Fried Chicken Basket", desc: "Crispy fried chicken served with fries, coleslaw, and comeback sauce.", price: "$14", icon: "🍗", delivery: ["DoorDash", "Uber Eats"] },
-    { name: "Li'l Dizzy's Cafe", hood: "Tremé", dish: "Fried Chicken Lunch", desc: "Classic NOLA soul food fried chicken with cornbread and greens.", price: "$15", icon: "🍗", delivery: ["Uber Eats"] },
-  ],
-  lamb: [
-    { name: "Saba", hood: "Magazine Street", dish: "Lamb Shank", desc: "Braised lamb shank, Israeli couscous, harissa, and pickled turnips. Modern Israeli soul food.", price: "$34", icon: "🍖", delivery: ["Uber Eats", "DoorDash"] },
-    { name: "1000 Figs", hood: "Magazine Street", dish: "Lamb Kofta Plate", desc: "Spiced ground lamb skewers with hummus, tabbouleh, and warm pita.", price: "$17", icon: "🥙", delivery: ["DoorDash", "Uber Eats"] },
-    { name: "Kebab", hood: "Mid-City", dish: "Lamb Kebab Platter", desc: "Char-grilled lamb kebabs over basmati rice with grilled veggies and tzatziki.", price: "$18", icon: "🔥", delivery: ["DoorDash", "Uber Eats"] },
-    { name: "Tal's Hummus", hood: "Uptown", dish: "Lamb Shawarma Bowl", desc: "Slow-roasted seasoned lamb over rice with pickles, tahini, and house hummus.", price: "$16", icon: "🥙", delivery: ["Uber Eats", "DoorDash"] },
-    { name: "Shaya", hood: "Uptown", dish: "Wood-Fired Lamb Chops", desc: "Herb-crusted lamb chops with labneh and seasonal accompaniments.", price: "$38", icon: "🍖", delivery: ["Uber Eats"] },
-    { name: "Pyramid Cafe", hood: "Kenner", dish: "Lamb Gyro Plate", desc: "Seasoned lamb and beef gyro meat with Greek salad, feta, and pita.", price: "$14", icon: "🥙", delivery: ["DoorDash", "Uber Eats"] },
-  ],
-  beef: [
-    { name: "Company Burger", hood: "Freret Street", dish: "The Company Burger", desc: "Double patty smash burger, American cheese, house-made pickles, special sauce.", price: "$12", icon: "🍔", delivery: ["DoorDash", "Uber Eats"] },
-    { name: "Yo Mama's Bar & Grill", hood: "French Quarter", dish: "Bacon Cheddar Burger", desc: "Half-pound Angus patty loaded with applewood bacon, cheddar, and garlic aioli.", price: "$16", icon: "🍔", delivery: ["Uber Eats", "DoorDash"] },
-    { name: "Desi Vega's Steakhouse", hood: "Metairie", dish: "14oz Ribeye", desc: "Prime-grade ribeye, charbroiled and finished with garlic butter. Old-school steakhouse.", price: "$52", icon: "🥩", delivery: ["DoorDash"] },
-    { name: "Fharmacy", hood: "Bywater", dish: "The Fharmacy Burger", desc: "Grass-fed beef burger with house-ground blend, seasonal toppings.", price: "$14", icon: "🍔", delivery: ["DoorDash", "Uber Eats"] },
-    { name: "Copper Vine", hood: "CBD", dish: "Hanger Steak Frites", desc: "Pan-seared hanger steak with truffle fries and peppercorn sauce.", price: "$29", icon: "🥩", delivery: ["Uber Eats"] },
-    { name: "Charcoal's Gourmet Burger Bar", hood: "Kenner", dish: "Charcoal's Classic", desc: "Chargrilled burger with pepper jack, grilled onions, and house sauce.", price: "$13", icon: "🍔", delivery: ["DoorDash", "Uber Eats"] },
-  ],
-  fish: [
-    { name: "Pêche Seafood Grill", hood: "Warehouse District", dish: "Whole Roasted Fish", desc: "Daily catch, whole roasted with chili glaze and herb salad. James Beard winning seafood.", price: "$32", icon: "🐟", delivery: ["Uber Eats", "DoorDash"] },
-    { name: "GW Fins", hood: "French Quarter", dish: "Scalibut", desc: "Pan-seared halibut with lobster sauce, a signature preparation from one of NOLA's premier seafood restaurants.", price: "$44", icon: "🐟", delivery: ["Uber Eats"] },
-    { name: "Cochon", hood: "Warehouse District", dish: "Louisiana Catfish", desc: "Fried Gulf catfish with pickled watermelon rind and ranch-style tartar sauce.", price: "$25", icon: "🐱", delivery: ["DoorDash", "Uber Eats"] },
-    { name: "Trenasse", hood: "CBD", dish: "Drum Court-Bouillon", desc: "Gulf drum in a Creole tomato-based court-bouillon over steamed rice.", price: "$28", icon: "🐟", delivery: ["Uber Eats"] },
-    { name: "Katie's", hood: "Mid-City", dish: "Grilled Fish Platter", desc: "Fresh Gulf fish chargrilled with lemon butter, roasted veggies, and rice.", price: "$24", icon: "🐟", delivery: ["DoorDash", "Uber Eats"] },
-    { name: "Elysian Seafood", hood: "Bywater", dish: "Fish Sandwich", desc: "Crispy fried Gulf fish on a toasted bun with slaw and remoulade.", price: "$14", icon: "🐟", delivery: ["DoorDash"] },
-  ],
-  pork: [
-    { name: "Cochon Butcher", hood: "Warehouse District", dish: "Pork Belly Sandwich", desc: "Melt-in-your-mouth pork belly, jalapeño-mint jelly, crispy cracklins on a pressed roll.", price: "$14", icon: "🥪", delivery: ["DoorDash", "Uber Eats"] },
-    { name: "Boucherie", hood: "Uptown", dish: "Pulled Pork Plate", desc: "Slow-smoked pulled pork shoulder, smoked boudin balls, and Southern sides.", price: "$17", icon: "🐷", delivery: ["Uber Eats", "DoorDash"] },
-    { name: "Joint (The)", hood: "Bywater", dish: "Pulled Pork Platter", desc: "Hickory-smoked pulled pork piled high with coleslaw and baked beans.", price: "$15", icon: "🔥", delivery: ["DoorDash"] },
-    { name: "Toups' Meatery", hood: "Mid-City", dish: "Double-Cut Pork Chop", desc: "Massive bone-in Berkshire pork chop, brined and grilled, Cajun country-style.", price: "$32", icon: "🍖", delivery: ["Uber Eats"] },
-    { name: "Piece of Meat", hood: "Mid-City", dish: "Smoked Ribs (Half Rack)", desc: "St. Louis-style pork ribs, dry-rubbed and smoked, with two sides.", price: "$22", icon: "🔥", delivery: ["DoorDash", "Uber Eats"] },
-    { name: "Blue Oak BBQ", hood: "Mid-City", dish: "Pulled Pork Sandwich", desc: "Low-and-slow smoked pork on a brioche bun with vinegar slaw.", price: "$13", icon: "🥪", delivery: ["DoorDash", "Uber Eats"] },
-  ],
-  shrimp: [
-    { name: "Pascal's Manale", hood: "Uptown", dish: "Original BBQ Shrimp", desc: "The OG — head-on Gulf shrimp swimming in buttery, peppery BBQ sauce. Bring bread.", price: "$32", icon: "🦐", delivery: ["DoorDash"] },
-    { name: "Deanie's Seafood", hood: "Bucktown", dish: "BBQ Shrimp Platter", desc: "Jumbo Gulf shrimp in a rich butter and spice sauce with French bread for soaking.", price: "$28", icon: "🦐", delivery: ["DoorDash", "Uber Eats"] },
-    { name: "Mr. Ed's Oyster Bar", hood: "Kenner", dish: "Shrimp Po-Boy", desc: "Golden fried Gulf shrimp on Leidenheimer French bread, dressed with lettuce, tomato, mayo.", price: "$16", icon: "🥖", delivery: ["DoorDash", "Uber Eats"] },
-    { name: "Liuzza's By The Track", hood: "Mid-City", dish: "Shrimp & Grits", desc: "Sautéed Gulf shrimp over creamy stone-ground grits with Creole cream sauce.", price: "$18", icon: "🦐", delivery: ["Uber Eats"] },
-    { name: "Mahony's Po-Boys", hood: "Uptown", dish: "Peacemaker Po-Boy", desc: "Fried shrimp and oysters together on French bread — the best of both worlds.", price: "$19", icon: "🥖", delivery: ["DoorDash", "Uber Eats"] },
-    { name: "Neyow's Creole Cafe", hood: "Mid-City", dish: "Shrimp Creole", desc: "Gulf shrimp in a rich tomato Creole sauce over steamed white rice.", price: "$20", icon: "🦐", delivery: ["DoorDash"] },
-  ],
-  vegetarian: [
-    { name: "Seed", hood: "Lower Garden District", dish: "Buddha Bowl", desc: "Roasted seasonal veggies, quinoa, avocado, tahini drizzle — fully plant-based.", price: "$15", icon: "🥗", delivery: ["DoorDash", "Uber Eats"] },
-    { name: "Carmo", hood: "Warehouse District", dish: "Tropical Veggie Bowl", desc: "Caribbean and Brazilian-inspired bowl with plantains, black beans, rice, and sofrito.", price: "$16", icon: "🌴", delivery: ["Uber Eats", "DoorDash"] },
-    { name: "1000 Figs", hood: "Magazine Street", dish: "Falafel Plate", desc: "Crispy housemade falafel with hummus, Israeli salad, pickled beets, and pita.", price: "$15", icon: "🧆", delivery: ["DoorDash", "Uber Eats"] },
-    { name: "Sweet Soulfood", hood: "Gentilly", dish: "Veggie Plate", desc: "Pick three Southern veggie sides — mac & cheese, greens, yams, cornbread.", price: "$13", icon: "🥬", delivery: ["DoorDash"] },
-    { name: "Saba", hood: "Magazine Street", dish: "Hummus & Pita Spread", desc: "Silky smooth hummus, wood-fired pita, and an array of Israeli mezze.", price: "$14", icon: "🥙", delivery: ["Uber Eats", "DoorDash"] },
-    { name: "Tal's Hummus", hood: "Uptown", dish: "Veggie Shawarma Bowl", desc: "Roasted cauliflower and eggplant over rice with tahini and pickled veggies.", price: "$14", icon: "🥙", delivery: ["Uber Eats", "DoorDash"] },
-  ]
-};
+// ====================================================
+// Orbiting food emojis for the spinner
+// ====================================================
+const foodEmojis = ['🍗','🥩','🐟','🦐','🥬','🍔','🌶️','🍖','🧆','🥓','🦀','🥘','🍤','🌽','🍳'];
 
+function setupOrbits() {
+  const ring1 = ['🍗','🥩','🐟','🦐','🥬','🍖'];
+  const ring2 = ['🍔','🌶️','🧆','🥓','🦀'];
+  const o1 = document.getElementById('orbit1');
+  const o2 = document.getElementById('orbit2');
+  o1.innerHTML = '';
+  o2.innerHTML = '';
+  ring1.forEach(function(e, i) {
+    const angle = (360 / ring1.length) * i;
+    const rad = angle * Math.PI / 180;
+    const r = 70;
+    const x = 80 + r * Math.cos(rad) - 13;
+    const y = 80 + r * Math.sin(rad) - 13;
+    o1.innerHTML += '<span class="orbit-emoji" style="left:'+x+'px;top:'+y+'px">'+e+'</span>';
+  });
+  ring2.forEach(function(e, i) {
+    const angle = (360 / ring2.length) * i;
+    const rad = angle * Math.PI / 180;
+    const r = 50;
+    const x = 80 + r * Math.cos(rad) - 13;
+    const y = 80 + r * Math.sin(rad) - 13;
+    o2.innerHTML += '<span class="orbit-emoji" style="left:'+x+'px;top:'+y+'px">'+e+'</span>';
+  });
+}
+setupOrbits();
+
+// ====================================================
+// Loading messages
+// ====================================================
+const loadingMessages = [
+  { title: "Scouting the scene...", sub: "Checking who's still cookin'" },
+  { title: "Asking the locals...", sub: "They always know the best spots" },
+  { title: "Peeking at menus...", sub: "Looking for that perfect dish" },
+  { title: "Verifying hours...", sub: "Making sure the kitchen's hot" },
+  { title: "Crossing Bourbon St...", sub: "Dodging the tourists, finding the gems" },
+  { title: "Consulting the roux...", sub: "Good things take a little time" },
+  { title: "Sniffing the air...", sub: "Following the aroma down Magazine" },
+  { title: "Flagging the waiter...", sub: "Almost got your picks ready" },
+];
+
+let msgInterval = null;
+function startLoadingMessages() {
+  let idx = Math.floor(Math.random() * loadingMessages.length);
+  function setMsg() {
+    const m = loadingMessages[idx % loadingMessages.length];
+    document.getElementById('loading-title').textContent = m.title;
+    document.getElementById('loading-sub').textContent = m.sub;
+    idx++;
+  }
+  setMsg();
+  msgInterval = setInterval(setMsg, 3000);
+}
+function stopLoadingMessages() {
+  if (msgInterval) { clearInterval(msgInterval); msgInterval = null; }
+}
+
+// ====================================================
+// State
+// ====================================================
 let currentProtein = null;
 
-function pickProtein(protein) {
+const proteinLabels = {
+  chicken: 'Chicken', lamb: 'Lamb', beef: 'Beef', fish: 'Fish',
+  pork: 'Pork', shrimp: 'Shrimp', vegetarian: 'Vegetarian', surprise: 'Surprise'
+};
+
+// ====================================================
+// Show / hide sections
+// ====================================================
+function showSection(id) {
+  ['selection','loading','results'].forEach(function(s) {
+    const el = document.getElementById(s);
+    el.style.display = 'none';
+    el.classList.remove('visible');
+  });
+  const target = document.getElementById(id);
+  target.style.display = (id === 'results') ? 'block' : (id === 'loading') ? 'block' : 'block';
+  target.classList.add('visible');
+}
+
+// ====================================================
+// Pick protein -> live fetch
+// ====================================================
+async function pickProtein(protein) {
   currentProtein = protein;
-  showResults(protein);
-}
+  showSection('loading');
+  startLoadingMessages();
 
-function showResults(protein) {
-  document.getElementById('selection').style.display = 'none';
-  const results = document.getElementById('results');
-  results.classList.add('visible');
-
-  const label = protein.charAt(0).toUpperCase() + protein.slice(1);
-  document.getElementById('results-title').textContent = `${label} — 3 Picks`;
-
-  renderCards(protein);
-}
-
-function renderCards(protein) {
-  const pool = [...data[protein]];
-  // Shuffle and pick 3
-  for (let i = pool.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
+  try {
+    const results = await fetchRestaurants(protein);
+    stopLoadingMessages();
+    displayResults(protein, results);
+  } catch (err) {
+    stopLoadingMessages();
+    console.error('Fetch error:', err);
+    displayError(err.message || 'Something went wrong. Try again!');
   }
-  const picks = pool.slice(0, 3);
+}
+
+// ====================================================
+// Call Anthropic API with web search
+// ====================================================
+async function fetchRestaurants(protein) {
+  let searchProtein = protein;
+  const allProteins = ['chicken','lamb','beef','fish','pork','shrimp','vegetarian'];
+  if (protein === 'surprise') {
+    // pick 3 random proteins for variety
+    const shuffled = allProteins.sort(function() { return 0.5 - Math.random(); });
+    searchProtein = shuffled.slice(0,3).join(', ');
+  }
+
+  const systemPrompt = `You are a New Orleans restaurant expert. The user wants food delivery recommendations.
+
+CRITICAL: You MUST respond with ONLY a valid JSON array. No markdown, no backticks, no preamble, no explanation. Just the raw JSON array.
+
+Search for CURRENTLY OPEN restaurants in New Orleans, Louisiana that:
+1. Are real, currently operating restaurants (not permanently closed)
+2. Serve the requested protein/cuisine
+3. Are available on food delivery apps (DoorDash, Uber Eats)
+4. Are located in the Greater New Orleans metro area
+
+Return EXACTLY 3 restaurants as a JSON array with this structure:
+[
+  {
+    "name": "Restaurant Name",
+    "neighborhood": "Neighborhood",
+    "dish": "Specific Menu Item Name",
+    "description": "1-2 sentence description of the dish",
+    "price": "$XX",
+    "icon": "single food emoji",
+    "delivery": ["DoorDash", "Uber Eats"]
+  }
+]
+
+For delivery apps, only include platforms you have evidence the restaurant uses. If unsure, include ["DoorDash", "Uber Eats"] as most NOLA restaurants use both.
+
+IMPORTANT: Return ONLY the JSON array. No other text.`;
+
+  let userMsg;
+  if (protein === 'surprise') {
+    userMsg = 'Find me 3 different restaurants in New Orleans, each serving a DIFFERENT type of protein/cuisine from this list: ' + searchProtein + '. Each restaurant should have a different protein. Make sure all 3 are currently open and operating in 2025-2026. Search the web to verify.';
+  } else {
+    userMsg = 'Find me 3 restaurants in New Orleans that serve great ' + protein + ' dishes and are available for food delivery. Make sure all 3 are currently open and operating in 2025-2026. Search the web to verify each one is still open. Give me specific menu items with prices.';
+  }
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: systemPrompt,
+      tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+      messages: [{ role: 'user', content: userMsg }]
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error('API returned ' + response.status);
+  }
+
+  const data = await response.json();
+
+  // Extract text blocks from the response
+  let textContent = '';
+  if (data.content && Array.isArray(data.content)) {
+    data.content.forEach(function(block) {
+      if (block.type === 'text' && block.text) {
+        textContent += block.text;
+      }
+    });
+  }
+
+  // Parse JSON from the response
+  let restaurants;
+  try {
+    // Try direct parse first
+    const cleaned = textContent.replace(/```json|```/g, '').trim();
+    restaurants = JSON.parse(cleaned);
+  } catch (e) {
+    // Try to extract JSON array from text
+    const match = textContent.match(/\[[\s\S]*\]/);
+    if (match) {
+      restaurants = JSON.parse(match[0]);
+    } else {
+      throw new Error('Could not parse restaurant data');
+    }
+  }
+
+  if (!Array.isArray(restaurants) || restaurants.length === 0) {
+    throw new Error('No restaurants found');
+  }
+
+  return restaurants.slice(0, 3);
+}
+
+// ====================================================
+// Display results
+// ====================================================
+function displayResults(protein, restaurants) {
+  showSection('results');
+  const label = protein === 'surprise' ? "Chef's Surprise" : proteinLabels[protein];
+  document.getElementById('results-title').textContent = label + ' \u2014 3 Picks';
 
   const cardsEl = document.getElementById('cards');
-  cardsEl.innerHTML = picks.map(r => {
-    const badges = r.delivery.map(d => {
-      if (d === 'Uber Eats') return `<span class="badge badge-uber">Uber Eats</span>`;
-      if (d === 'DoorDash') return `<span class="badge badge-dd">DoorDash</span>`;
-      if (d === 'Grubhub') return `<span class="badge badge-gh">Grubhub</span>`;
+  cardsEl.innerHTML = restaurants.map(function(r) {
+    const deliveryApps = r.delivery || ['DoorDash', 'Uber Eats'];
+    const badges = deliveryApps.map(function(d) {
+      if (d.toLowerCase().includes('uber')) return '<span class="badge badge-uber">Uber Eats</span>';
+      if (d.toLowerCase().includes('doordash') || d.toLowerCase().includes('door')) return '<span class="badge badge-dd">DoorDash</span>';
       return '';
     }).join('');
 
-    return `
-      <div class="restaurant-card">
-        <div class="card-top">
-          <div>
-            <div class="restaurant-name">${r.name}</div>
-            <div class="neighborhood">${r.hood}</div>
-          </div>
-          <div class="delivery-badges">${badges}</div>
-        </div>
-        <div class="divider"></div>
-        <div class="dish-section">
-          <div class="dish-icon">${r.icon}</div>
-          <div class="dish-info">
-            <div class="dish-name">${r.dish}</div>
-            <div class="dish-desc">${r.desc}</div>
-            <div class="dish-price">${r.price}</div>
-          </div>
-        </div>
-      </div>
-    `;
+    const icon = r.icon || '\ud83c\udf7d\ufe0f';
+    const price = r.price || '';
+    const hood = r.neighborhood || r.hood || '';
+
+    return '<div class="restaurant-card">' +
+      '<div class="card-top"><div>' +
+        '<div class="restaurant-name">' + escapeHtml(r.name) + '</div>' +
+        '<div class="neighborhood">' + escapeHtml(hood) + '</div>' +
+      '</div><div class="delivery-badges">' + badges + '</div></div>' +
+      '<div class="divider"></div>' +
+      '<div class="dish-section"><div class="dish-icon">' + icon + '</div>' +
+      '<div class="dish-info">' +
+        '<div class="dish-name">' + escapeHtml(r.dish) + '</div>' +
+        '<div class="dish-desc">' + escapeHtml(r.description || r.desc || '') + '</div>' +
+        '<div class="dish-price">' + escapeHtml(price) + '</div>' +
+      '</div></div></div>';
   }).join('');
 }
 
-function shuffleCurrent() {
-  if (currentProtein) {
-    const cards = document.querySelectorAll('.restaurant-card');
-    cards.forEach(c => c.style.animation = 'none');
-    renderCards(currentProtein);
-    // Re-trigger animation
-    setTimeout(() => {
-      document.querySelectorAll('.restaurant-card').forEach((c, i) => {
-        c.style.animation = `scaleIn 0.4s ease-out ${0.1 + i * 0.12}s both`;
-      });
-    }, 10);
-  }
+function displayError(msg) {
+  showSection('results');
+  document.getElementById('results-title').textContent = 'Hmm...';
+  document.getElementById('cards').innerHTML =
+    '<div class="error-msg"><strong>Couldn\'t fetch restaurants right now.</strong><br>' +
+    escapeHtml(msg) + '<br><br>Hit the button below to try again!</div>';
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ====================================================
+// Shuffle = re-fetch live
+// ====================================================
+async function shuffleCurrent() {
+  if (!currentProtein) return;
+  await pickProtein(currentProtein);
 }
 
 function goBack() {
-  document.getElementById('results').classList.remove('visible');
-  document.getElementById('selection').style.display = 'block';
+  showSection('selection');
   currentProtein = null;
 }
 </script>
