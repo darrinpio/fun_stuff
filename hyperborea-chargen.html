@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hyperborea 3E — Character Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700;900&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#d4a847;--gold-dim:#6b5626;--blood:#8b1a1a;--text:#d4cbb8;--text-dim:#8a7e6e;--bg-card:rgba(255,255,255,0.03);--bg-card-hover:rgba(255,255,255,0.06);--fighter:#c62828;--magician:#4a148c;--cleric:#e6a817;--thief:#2e7d32}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;background:linear-gradient(180deg,#0a0806 0%,#15100a 50%,#0a0806 100%);color:var(--text);font-family:'EB Garamond',Georgia,serif;padding:20px}
+button{cursor:pointer;font-family:'Cinzel',serif;transition:all .2s}button:hover{transform:translateY(-1px)}
+.page-title{text-align:center;font-family:'Cinzel Decorative',serif;font-size:2.2em;font-weight:900;color:var(--gold);letter-spacing:4px;text-transform:uppercase;margin-bottom:4px;text-shadow:0 2px 12px rgba(212,168,71,.2)}
+.page-title.sm{font-size:1.4em}.page-title.xs{font-size:1.3em}
+.page-sub{text-align:center;color:var(--text-dim);font-style:italic;font-size:.95em;margin-bottom:28px}
+.ornament{text-align:center;color:var(--gold-dim);font-size:1.2em;letter-spacing:8px;margin:8px 0 20px;user-select:none}
+.center-col{max-width:820px;margin:0 auto}
+.btn-primary{background:linear-gradient(135deg,var(--blood),#5c1010);color:var(--gold);border:1px solid var(--gold-dim);padding:12px 28px;font-size:1em;letter-spacing:2px;border-radius:3px;font-weight:700;text-transform:uppercase}
+.btn-primary:hover{background:linear-gradient(135deg,#a01515,#6b1212);border-color:var(--gold);box-shadow:0 4px 20px rgba(139,26,26,.4)}
+.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--gold-dim);padding:10px 22px;font-size:.85em;letter-spacing:1px;border-radius:3px}
+.btn-secondary:hover{border-color:var(--gold);color:var(--gold);background:rgba(212,168,71,.05)}
+.btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px}
+.welcome-rules{margin:40px auto 0;color:var(--text-dim);font-size:.8em;line-height:1.7;max-width:500px;text-align:center}
+.welcome-rules strong{color:var(--gold)}
+.level-select{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:20px 0}
+.level-btn{width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:var(--bg-card);border:1px solid rgba(255,255,255,.1);border-radius:3px;color:var(--text);font-family:'Cinzel',serif;font-size:1.1em;font-weight:700;cursor:pointer;transition:all .15s}
+.level-btn:hover{border-color:var(--gold-dim);color:var(--gold)}
+.level-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(212,168,71,.1)}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:16px}
+.filter-btn{padding:5px 14px;font-size:.75em;letter-spacing:1px;background:transparent;border:1px solid rgba(255,255,255,.1);color:var(--text-dim);border-radius:2px;font-family:'Cinzel',serif;cursor:pointer}
+.filter-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(212,168,71,.08)}
+.class-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;max-width:820px;margin:0 auto}
+.class-card{background:var(--bg-card);border:1px solid rgba(255,255,255,.06);border-radius:3px;padding:12px 14px 12px 17px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
+.class-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.class-card.pf::before{background:var(--fighter)}.class-card.pm::before{background:var(--magician)}
+.class-card.pc::before{background:var(--cleric)}.class-card.pt::before{background:var(--thief)}
+.class-card:hover{border-color:var(--gold-dim);background:var(--bg-card-hover)}
+.class-card h4{font-family:'Cinzel',serif;font-size:.9em;color:var(--text);margin-bottom:2px}
+.class-card .ct{font-size:.7em;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase}
+.class-card .cr{font-size:.72em;color:var(--text-dim);margin-top:4px}
+.class-card .ch{font-size:.72em;color:var(--gold-dim);margin-top:2px}
+.sheet{background:linear-gradient(135deg,#1a1510 0%,#0d0b08 100%);border:2px solid var(--gold-dim);border-radius:4px;padding:24px;max-width:820px;margin:0 auto}
+.sheet-header{text-align:center;border-bottom:2px solid var(--gold-dim);padding-bottom:16px;margin-bottom:20px}
+.sheet-header h1{font-family:'Cinzel Decorative','Cinzel',serif;font-size:1.6em;color:var(--gold);letter-spacing:3px;margin:0 0 4px;text-transform:uppercase}
+.class-badge{display:inline-block;padding:3px 14px;border-radius:2px;font-family:'Cinzel',serif;font-size:.95em;font-weight:700;letter-spacing:2px;color:#fff;margin-top:6px}
+.sheet-sub{color:var(--text-dim);font-style:italic;margin-top:4px;font-size:.85em}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.sb{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:3px;padding:8px 10px;text-align:center}
+.sl{font-family:'Cinzel',serif;font-size:.65em;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px}
+.sval{font-family:'Cinzel',serif;font-size:1.6em;font-weight:700;color:var(--text)}
+.sval.prime{color:var(--gold)}
+.smeth{font-size:.65em;color:var(--text-dim);margin-top:1px}
+.smod{font-size:.7em;color:var(--text-dim);margin-top:4px;line-height:1.5}
+.dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:16px}
+.db{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:3px;padding:8px;text-align:center}
+.dlbl{font-size:.6em;color:var(--gold);letter-spacing:1px;text-transform:uppercase;font-family:'Cinzel',serif}
+.dval{font-size:1.4em;font-weight:700;font-family:'Cinzel',serif;color:var(--text)}
+.st{font-family:'Cinzel',serif;color:var(--gold);font-size:.8em;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid var(--gold-dim);padding-bottom:4px;margin:18px 0 10px}
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:.8em;color:var(--text-dim)}.ig strong{color:var(--text)}.ig .wide{grid-column:1/-1}
+.sg{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px}
+.sx{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:3px;padding:6px 4px;text-align:center}
+.sxn{font-size:.6em;color:var(--gold);letter-spacing:1px;text-transform:uppercase;font-family:'Cinzel',serif}
+.sxv{font-size:1.1em;font-weight:700;font-family:'Cinzel',serif;color:var(--text)}
+.sxm{font-size:.65em;color:#66bb6a}
+.al{font-size:.82em;color:var(--text-dim);line-height:1.7}.an{color:var(--text);font-weight:600}
+.hpb{font-size:.8em;color:var(--text-dim);line-height:1.8}.hpb .l1{color:var(--gold)}.hpt{margin-top:6px;color:var(--gold);font-weight:700}
+.cm{overflow-x:auto;margin-top:8px}.cm table{font-size:.68em;border-collapse:collapse;width:100%}
+.cm th,.cm td{padding:3px 4px;text-align:center;border:1px solid rgba(255,255,255,.08);font-family:'Cinzel',serif}
+.cm th{color:var(--gold);background:rgba(255,255,255,.03);font-size:.9em}.cm td{color:var(--text-dim)}
+.cm .fl{color:var(--gold);font-weight:700;white-space:nowrap}.cm .he{color:#66bb6a;font-weight:600}.cm .hh{color:#ef5350}
+.cm .cur{background:rgba(212,168,71,.08)}
+.wt{width:100%;border-collapse:collapse;font-size:.78em;margin-top:6px}
+.wt th{text-align:left;color:var(--gold);font-family:'Cinzel',serif;font-size:.8em;letter-spacing:1px;border-bottom:1px solid var(--gold-dim);padding:4px 6px}
+.wt td{padding:4px 6px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--text-dim)}
+.wt td:first-child{color:var(--text);font-weight:500}
+.wt .mod-pos{color:#66bb6a}.wt .mod-neg{color:#ef5350}
+.ec{display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;font-size:.8em;color:var(--text-dim);line-height:1.7}
+.ei{padding:1px 0}.sg-gold{color:var(--gold);font-weight:700;margin-top:6px;font-size:.85em}
+.hidden{display:none!important}
+@media print{
+  body{background:#fff!important;color:#000!important;padding:10px!important}
+  .sheet{background:#fff!important;border:2px solid #333!important;color:#000!important;max-width:100%!important}
+  .sheet *{color:#000!important}
+  .sheet-header h1{color:#333!important;text-shadow:none!important}
+  .class-badge{color:#fff!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .sl,.dlbl,.sxn,.st,.an,.hpt,.sg-gold,.fl,.sval.prime{color:#333!important}
+  .sxm,.he{color:#228b22!important}.hh,.mod-neg{color:#c00!important}.mod-pos{color:#228b22!important}
+  .sb,.db,.sx{border-color:#ccc!important;background:#f8f8f8!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .cm th{background:#eee!important;color:#333!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .cm .cur{background:#ffe!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .wt th{color:#333!important;border-color:#999!important}
+  .btn-row,.no-print{display:none!important}
+  #screen-welcome,#screen-level,#screen-class{display:none!important}
+  #screen-sheet{display:block!important}
+  @page{margin:.5in;size:letter}
+}
+@media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr)}.dg{grid-template-columns:repeat(3,1fr)}.sheet{padding:14px}.sg{grid-template-columns:repeat(3,1fr)}.ec{grid-template-columns:1fr}}
+@media(max-width:500px){.class-grid{grid-template-columns:1fr}.page-title{font-size:1.5em}}
+</style>
+</head>
+<body>
+<div id="screen-welcome" class="center-col" style="text-align:center;padding-top:60px">
+<div class="page-title">Hyperborea</div><div class="ornament">⸻ ✦ ⸻</div>
+<div class="page-sub">Character Generator — Third Edition<br>Swords, Sorcery &amp; Weird Science-Fantasy</div>
+<div class="btn-row" style="margin-top:32px"><button class="btn-primary" onclick="startMode('random')">Random Character</button><button class="btn-primary" onclick="startMode('choose')">Choose Your Class</button></div>
+<div class="welcome-rules"><strong>House Rules:</strong> Attributes rolled 3d6 (minimum 7). Class requirements rolled 4d6 drop lowest until met. Level 1 hit points rolled twice, keep the best. Starting gold: 1d4+1 gp.</div>
+</div>
+<div id="screen-level" class="center-col hidden" style="text-align:center;padding-top:40px">
+<div class="page-title sm">Select Starting Level</div><div class="ornament">⸻ ✦ ⸻</div>
+<div class="level-select" id="lb"></div>
+<div class="btn-row"><button class="btn-primary" id="blp" onclick="proceed()">Choose Class</button></div>
+<div class="btn-row" style="margin-top:8px"><button class="btn-secondary" onclick="show('welcome')">← Back</button></div>
+</div>
+<div id="screen-class" class="center-col hidden" style="padding-top:30px">
+<div class="page-title xs">Choose Your Class</div><div class="page-sub" id="csub"></div>
+<div class="filter-row" id="fb"></div><div class="class-grid" id="cg"></div>
+<div class="btn-row" style="margin-top:20px"><button class="btn-secondary" onclick="show('level')">← Back</button></div>
+</div>
+<div id="screen-sheet" class="center-col hidden" style="padding-top:20px">
+<div id="sc"></div><div class="btn-row" id="sbtns"></div>
+</div>
+<script>
+// ═══ WEAPON DATABASE ═══
+const W={
+"hand axe":{wc:1,range:"15/30/45",rof:"1/1",dmg:"1d6",type:"melee"},
+"battle axe":{wc:2,range:"—",rof:"1/1",dmg:"1d8 (1d10)",type:"melee"},
+"great axe":{wc:4,range:"—",rof:"1/1",dmg:"2d6",type:"melee",notes:"+, #"},
+"bastard sword":{wc:3,range:"—",rof:"1/1",dmg:"1d8 (2d6)",type:"melee"},
+"broad sword":{wc:2,range:"—",rof:"1/1",dmg:"1d8 (1d10)",type:"melee"},
+"long sword":{wc:2,range:"—",rof:"1/1",dmg:"1d8 (1d10)",type:"melee"},
+"short sword":{wc:1,range:"—",rof:"1/1",dmg:"1d6",type:"melee"},
+"two-handed sword":{wc:4,range:"—",rof:"1/1",dmg:"3d4",type:"melee",notes:"+"},
+"dagger":{wc:1,range:"10/20/30",rof:"3/2",dmg:"1d4",type:"melee"},
+"silver dagger":{wc:1,range:"10/20/30",rof:"3/2",dmg:"1d4",type:"melee"},
+"dart":{wc:0,range:"15/30/45",rof:"2/1",dmg:"1d3",type:"missile"},
+"falcata":{wc:1,range:"—",rof:"1/1",dmg:"1d6",type:"melee"},
+"horseman's flail":{wc:1,range:"—",rof:"1/1",dmg:"1d6",type:"melee",notes:"↵"},
+"footman's flail":{wc:3,range:"—",rof:"1/1",dmg:"1d10",type:"melee",notes:"↵, +"},
+"footman's mace":{wc:2,range:"—",rof:"1/1",dmg:"1d8 (1d10)",type:"melee"},
+"horseman's mace":{wc:1,range:"—",rof:"1/1",dmg:"1d6",type:"melee"},
+"war hammer":{wc:2,range:"—",rof:"1/1",dmg:"1d8 (1d10)",type:"melee"},
+"horseman's hammer":{wc:1,range:"10/20/30",rof:"1/1",dmg:"1d6",type:"melee"},
+"war club":{wc:2,range:"—",rof:"1/1",dmg:"1d6 (1d8)",type:"melee"},
+"morning star":{wc:2,range:"—",rof:"1/1",dmg:"1d8 (1d10)",type:"melee",notes:"Ω"},
+"halberd":{wc:4,range:"—",rof:"1/1",dmg:"1d10",type:"melee",notes:"+, ^, #"},
+"short spear":{wc:3,range:"15/30/45",rof:"1/1",dmg:"1d6 (1d8)",type:"melee",notes:"^"},
+"long spear":{wc:4,range:"—",rof:"1/1",dmg:"1d6 (1d8)",type:"melee",notes:"^"},
+"great spear":{wc:5,range:"—",rof:"1/1",dmg:"1d8",type:"melee",notes:"+, ^"},
+"spiked staff":{wc:3,range:"—",rof:"1/1",dmg:"1d10",type:"melee",notes:"+, ^, #"},
+"quarterstaff":{wc:3,range:"—",rof:"1/1",dmg:"1d6",type:"melee",notes:"↔ (+1 AC)"},
+"sickle":{wc:1,range:"—",rof:"1/1",dmg:"1d4",type:"melee"},
+"whip":{wc:5,range:"—",rof:"1/1",dmg:"1d2",type:"melee"},
+"long scimitar":{wc:2,range:"—",rof:"1/1",dmg:"1d8 (1d10)",type:"melee"},
+"short scimitar":{wc:1,range:"—",rof:"1/1",dmg:"1d6",type:"melee"},
+"fighting net":{wc:0,range:"10 ft.",rof:"1/2",dmg:"—",type:"missile"},
+"cæstuses":{wc:0,range:"—",rof:"1/1",dmg:"+1 pummel",type:"melee"},
+"hooked throwing knife":{wc:1,range:"30/60/90",rof:"1/1",dmg:"1d6",type:"missile",notes:"↵"},
+"tonfa":{wc:1,range:"—",rof:"1/1",dmg:"1d4",type:"melee",notes:"↔ (+1 AC)"},
+"trident, long":{wc:4,range:"10/20/30",rof:"1/1",dmg:"1d6 (1d8)",type:"melee",notes:"^"},
+"pike":{wc:6,range:"—",rof:"1/1",dmg:"1d8",type:"melee",notes:"+, ^"},
+"lance":{wc:5,range:"—",rof:"1/1",dmg:"1d8",type:"melee",notes:"^, ∇, o"},
+// Missile weapons
+"short bow":{wc:0,range:"50/100/150",rof:"3/2",dmg:"1d6",type:"missile"},
+"longbow":{wc:0,range:"70/140/210",rof:"3/2",dmg:"1d6",type:"missile"},
+"light crossbow":{wc:0,range:"60/120/180",rof:"1/1",dmg:"1d6+1",type:"missile"},
+"heavy crossbow":{wc:0,range:"80/160/240",rof:"1/2",dmg:"1d6+2",type:"missile"},
+"sling":{wc:0,range:"50/100/150",rof:"1/1",dmg:"1d4",type:"missile"},
+"blowgun":{wc:0,range:"30/60/90",rof:"1/1",dmg:"1 (+ poison)",type:"missile"},
+};
+// ═══ ARMOUR DATABASE ═══
+const ARM={
+"none":{ac:9,dr:0,mv:40,wt:"—",cls:"—"},
+"padded":{ac:8,dr:0,mv:40,wt:10,cls:"Light"},
+"leather":{ac:7,dr:0,mv:40,wt:15,cls:"Light"},
+"studded":{ac:6,dr:0,mv:40,wt:20,cls:"Light"},
+"scale mail":{ac:6,dr:1,mv:30,wt:25,cls:"Medium"},
+"chain mail":{ac:5,dr:1,mv:30,wt:30,cls:"Medium"},
+"laminated":{ac:5,dr:1,mv:30,wt:30,cls:"Medium"},
+"banded mail":{ac:4,dr:1,mv:30,wt:35,cls:"Medium"},
+"splint mail":{ac:4,dr:1,mv:30,wt:35,cls:"Medium"},
+"plate mail":{ac:3,dr:2,mv:20,wt:40,cls:"Heavy"},
+"field plate":{ac:2,dr:2,mv:20,wt:50,cls:"Heavy"},
+"full plate":{ac:1,dr:2,mv:20,wt:60,cls:"Heavy"},
+};
+const SHIELDS={"small":{def:1},"large":{def:2}};
+// ═══ ARMOUR KEYWORDS PER CLASS ═══
+// Maps class key to {armour, shield} from their starting pack
+const PKA={
+fighter:{a:"studded",s:"large"},magician:{a:"none",s:null},cleric:{a:"studded",s:null},thief:{a:"leather",s:null},
+barbarian:{a:"studded",s:"small"},berserker:{a:"scale mail",s:null},cataphract:{a:"scale mail",s:"small"},
+huntsman:{a:"leather",s:null},paladin:{a:"scale mail",s:"large"},ranger:{a:"studded",s:null},
+warlock:{a:"scale mail",s:null},cryomancer:{a:"none",s:null},illusionist:{a:"none",s:null},
+necromancer:{a:"none",s:null},pyromancer:{a:"none",s:null},witch:{a:"none",s:null},
+druid:{a:"studded",s:null},monk:{a:"none",s:null},priest:{a:"none",s:null},
+runegraver:{a:"studded",s:null},shaman:{a:"studded",s:null},
+assassin:{a:"leather",s:null},bard:{a:"studded",s:null},legerdemainist:{a:"studded",s:"small"},
+purloiner:{a:"leather",s:null},scout:{a:"padded",s:"small"},
+};
+// ═══ WEAPONS PER CLASS (from starting packs) ═══
+const PKW={
+fighter:["broad sword","short bow","dagger"],
+magician:["silver dagger","quarterstaff","sling"],
+cleric:["war hammer","dagger"],
+thief:["short sword","dart"],
+barbarian:["bastard sword","short bow","dagger"],
+berserker:["battle axe","hand axe","broad sword"],
+cataphract:["horseman's flail","long sword"],
+huntsman:["longbow","hand axe","short spear","fighting net"],
+paladin:["long sword","footman's mace","dagger"],
+ranger:["long sword","longbow","dagger"],
+warlock:["battle axe","light crossbow"],
+cryomancer:["hand axe","silver dagger","short spear"],
+illusionist:["silver dagger","quarterstaff","sling"],
+necromancer:["sickle","sling","whip"],
+pyromancer:["dart","quarterstaff","long scimitar"],
+witch:["blowgun","silver dagger"],
+druid:["short bow","dagger","short spear"],
+monk:["cæstuses","silver dagger","halberd","hooked throwing knife"],
+priest:["silver dagger","quarterstaff","whip"],
+runegraver:["battle axe","short bow","dagger"],
+shaman:["war club","dagger"],
+assassin:["light crossbow","dagger","short sword"],
+bard:["short bow","dagger","footman's mace"],
+legerdemainist:["dagger","falcata","sling"],
+purloiner:["dagger","morning star","sling"],
+scout:["hand axe","dart"],
+};
+// ═══ CLASS DATA ═══
+const C={
+fighter:{n:"Fighter",p:"fighter",hd:10,xg:3,desc:"An elite warrior and battle technician",req:{ST:9},pr:["ST"],al:"Any",arm:"Any",shi:"Any",fav:"Any weapon",up:0,ha9:3,sv:{D:2,T:2,V:0,A:0,S:0},fa:[0,1,2,3,4,5,6,7,8,9,10,11,12],ab:[{n:"Extraordinary",d:"Feat of Strength based on ST"},{n:"Heroic Fighting",d:"Double attacks vs ≤1 HD (≤2 HD at 7th)"},{n:"Weapon Mastery",d:"Master 2 weapons (+1 hit/dmg); new at 4th/8th/12th; Grand Mastery +2/+2"},{n:"Melee Expert",d:"At 7th, attack rate → 3/2"},{n:"Lordship",d:"At 9th, build stronghold, attract troops"}],pk:"Studded armour, large shield, short bow, arrows ×12, broad sword, arrow quiver, backpack, bandages, winter blanket, soft leather pouch, iron rations (1 week), hemp rope (50 ft.), large sack, 1-person tent, tinderbox, torches ×2, wineskin"},
+magician:{n:"Magician",p:"magician",hd:4,xg:5,desc:"A sorcerer of arcane formulæ",req:{IN:9},pr:["IN"],al:"Any",arm:"None",shi:"None",fav:"Dagger, dart, quarterstaff, sling",up:-4,ha9:1,sv:{D:0,T:0,V:2,A:0,S:2},fa:[0,0,0,1,1,2,2,3,3,4,4,5,5],ab:[{n:"Sorcery",d:"Memorize/cast arcane spells; bonus from high IN"},{n:"Familiar",d:"Animal companion; +1 bonus spell/level"},{n:"Alchemy / Read Magic",d:"Identify potions; decipher inscriptions"},{n:"Scroll Use/Writing",d:"Use and create spell scrolls"}],pk:"Silver dagger, quarterstaff, sling, bullets ×20, backpack, bandages, winter blanket, chalk, ink & quill, incendiary oil, parchment ×2, soft leather pouch, standard rations (1 week), silk rope (50 ft.), small sack, tinderbox, torches ×3, wineskin, writing stick, spell book"},
+cleric:{n:"Cleric",p:"cleric",hd:8,xg:3,desc:"An armed ecclesiastical sorcerer",req:{WS:9},pr:["WS"],al:"Any",arm:"Any",shi:"Any",fav:"Club, dagger, flail, hammer, mace, morning star, staff, spear, sword, whip",up:-2,ha9:2,sv:{D:2,T:0,V:0,A:0,S:2},fa:[0,1,1,2,2,3,4,5,5,6,6,7,8],ab:[{n:"Sorcery",d:"Cast divine spells through prayer"},{n:"Turn Undead",d:"Repel/destroy/command undead (d12)"},{n:"Scroll Use/Writing",d:"Divine scrolls (consecrated ground)"},{n:"Lordship",d:"At 9th, build temple"}],pk:"Studded armour, dagger, war hammer, backpack, bandages, silver holy symbol, holy water, soft leather pouch, iron rations (1 week), small sack, tinderbox, torches ×3, wineskin, writing stick"},
+thief:{n:"Thief",p:"thief",hd:6,xg:1,desc:"A cunning specialist in stealth and skills",req:{DX:9},pr:["DX"],al:"CG, N, LE, CE",arm:"Light",shi:"Small",fav:"Hand axe, bow, club, crossbow, dagger, dart, falcata, sling, sword, trident",up:-2,ha9:2,sv:{D:0,T:0,V:2,A:2,S:0},fa:[0,1,1,2,2,3,4,5,5,6,6,7,8],ab:[{n:"Agile",d:"+1 AC when unencumbered"},{n:"Backstab",d:"+4 hit from behind; ×2 to ×5 damage"},{n:"Detect Secret Doors",d:"3-in-6"},{n:"Progressive Thief Abilities",d:"Climb, Decipher, Discern Noise, Hide, Traps, Move Silent, Locks, Pick Pockets, Read Scrolls (d12)"}],pk:"Leather armour, darts ×2, short sword, backpack, bandages, chalk, dice, fishing hooks ×12, fishing string, grappling hook, soft leather pouch, iron rations (1 week), silk rope (50 ft.), large sack, thieves' tools, tinderbox, torches ×2, wineskin, wire spool, writing stick"},
+barbarian:{n:"Barbarian",p:"fighter",hd:12,xg:7,desc:"An outland warrior of feral instincts",req:{ST:13,DX:13,CN:13},pr:["ST","DX"],al:"CG, CE",arm:"Any",shi:"Any",fav:"Any melee",up:0,ha9:4,sv:{D:2,T:2,V:2,A:2,S:2},fa:[0,1,2,3,4,5,6,7,8,9,10,11,12],ab:[{n:"Hardy",d:"+2 ALL saves"},{n:"Agile / Alertness / Ambusher",d:"+1 AC; surprised 1-in-8; 4-in-6 surprise"},{n:"Climb / Move Silently",d:"As thief (light armour)"},{n:"Draw Poison / Sense Magic",d:"Revive victims; 4-in-12 detect"},{n:"Track / Wilderness Survival",d:"Track; navigate, forage, shelter"},{n:"Melee Expert",d:"At 7th, 3/2 rate"}],pk:"Studded armour, small shield, arrows ×12, short bow, dagger, bastard sword, arrow quiver, backpack, bandages, fishing net, hunting horn, soft leather pouch, standard rations (1 week), large sack, torches ×3, wineskin"},
+berserker:{n:"Berserker",p:"fighter",hd:12,xg:5,desc:"A shock trooper of unbridled battle rage",req:{ST:15,CN:15},pr:["ST","CN"],al:"CG, CE",arm:"Medium or lighter",shi:"Any",fav:"Melee (shuns missiles)",up:0,ha9:4,sv:{D:2,T:2,V:2,A:2,S:2},fa:[0,1,2,3,4,5,6,7,8,9,10,11,12],ab:[{n:"Hardy",d:"+2 ALL saves"},{n:"Berserk Rage",d:"2/1 attacks, +2 hit/dmg, immune fire/fear/charm"},{n:"Thick Skin",d:"Natural AC 8→3 (L1→L12)"},{n:"Bestial Form",d:"At 7th, transform in rage"},{n:"Weapon Mastery",d:"As Fighter"}],pk:"Scale mail, battle axe, hand axes ×2, broad sword, backpack, soft leather pouch, iron rations (1 week), large sack, tinderbox, torches ×3, wineskin"},
+cataphract:{n:"Cataphract",p:"fighter",hd:10,xg:4,desc:"An armoured horseman and warrior elite",req:{ST:9,DX:9,WS:9,CH:9},pr:["ST","CH"],al:"Any",arm:"Any",shi:"Any",fav:"Mounted weapons",up:0,ha9:3,sv:{D:2,T:2,V:0,A:0,S:0},fa:[0,1,2,3,4,5,6,7,8,9,10,11,12],ab:[{n:"Horsemanship",d:"Fight without penalty from saddle"},{n:"Mounted Charge",d:"Triple lance damage"},{n:"Shield Sacrifice",d:"Destroy shield to negate one blow"},{n:"Skilful Defender",d:"AC bonus in med/heavy armour"},{n:"Weapon Mastery / Melee Expert",d:"As Fighter"}],pk:"Scale mail, small shield, horseman's flail, long sword, backpack, bandages, hooded lantern, lamp oil, soft leather pouch, iron rations (1 week), large sack, tinderbox, wineskin"},
+huntsman:{n:"Huntsman",p:"fighter",hd:10,xg:4,desc:"A wilderness warrior who glories in the hunt",req:{ST:9,DX:9,WS:9,CH:12},pr:["ST","WS"],al:"Any",arm:"Light, Medium",shi:"Any",fav:"Bows, spears",up:0,ha9:3,sv:{D:2,T:2,V:0,A:0,S:0},fa:[0,1,2,3,4,5,6,7,8,9,10,11,12],ab:[{n:"Alertness / Ambusher",d:"1-in-8 surprise; 4-in-6 surprise"},{n:"Climb / Hide / Move Silently",d:"As thief"},{n:"Predator",d:"+1 dmg/level vs animals"},{n:"Subdue Animal / Werewolf Slayer",d:"Capture; bonus vs lycanthropes at 4th"},{n:"Wilderness Traps",d:"Find/remove"}],pk:"Leather armour, hand axe, fighting net, longbow, arrows ×12, silver arrows ×2, short spear, arrow quiver, backpack, sinew cord, hunting horn, soft leather pouch, standard rations (1 week), torches ×2, wineskin"},
+paladin:{n:"Paladin",p:"fighter",hd:10,xg:6,desc:"An honour-bound champion of Law",req:{ST:9,DX:9,WS:9,CH:15},pr:["ST","CH"],al:"LG (Fell: LE)",arm:"Any",shi:"Any",fav:"All weapons",up:0,ha9:3,sv:{D:2,T:2,V:2,A:2,S:2},fa:[0,1,2,3,4,5,6,7,8,9,10,11,12],ab:[{n:"Divine Protection",d:"+2 ALL saves; disease immune"},{n:"Healing / Sense Evil",d:"Lay on hands; detect evil"},{n:"Sacred Mount",d:"At 5th, divinely gifted warhorse"},{n:"Turn Undead",d:"At 5th, as cleric"},{n:"Sorcery",d:"At 7th, Cleric spells"}],pk:"Scale mail, large shield, dagger, footman's mace, long sword, backpack, wooden holy symbol, soft leather pouch, iron rations (1 week), tinderbox, torches ×2, wineskin"},
+ranger:{n:"Ranger",p:"fighter",hd:10,xg:4,desc:"A borderland fighter, nemesis of horrors",req:{ST:9,DX:9,IN:9,WS:9},pr:["ST","WS"],al:"LG, CG, N",arm:"Medium or lighter",shi:"Any",fav:"All weapons",up:0,ha9:3,sv:{D:2,T:2,V:0,A:0,S:0},fa:[0,1,2,3,4,5,6,7,8,9,10,11,12],ab:[{n:"Climb / Discern / Hide / Move Silent",d:"As thief"},{n:"Track / Otherworldly Enemies",d:"Track; dmg bonus vs dæmons/undead"},{n:"Sorcery",d:"At 7th, Druid + Magician spells"},{n:"Melee Expert",d:"At 7th, 3/2 rate"}],pk:"Studded armour, dagger, long sword, longbow, arrows ×12, arrow quiver, backpack, bandages, winter blanket, standard rations (1 week), hemp rope (50 ft.), large sack, torches ×3, wineskin"},
+warlock:{n:"Warlock",p:"fighter",hd:8,xg:7,desc:"A spell-weaving fighter of steel and sorcery",req:{ST:12,IN:12},pr:["ST","IN"],al:"Any",arm:"Light, Medium",shi:"Any",fav:"Fighter weapons",up:0,ha9:2,sv:{D:2,T:2,V:0,A:0,S:0},fa:[0,1,2,3,4,5,6,7,8,9,10,11,12],ab:[{n:"Sorcery",d:"Chosen school from 1st level"},{n:"Read Magic / Scroll Use",d:"As Magician"},{n:"Weapon Mastery / Melee Expert",d:"As Fighter"}],pk:"Scale mail, battle axe, light crossbow, light bolts ×20, backpack, bandages, bolt case, ink & quill, soft leather pouch, iron rations (1 week), hemp rope (50 ft.), tinderbox, torches ×2, wineskin, spell book"},
+cryomancer:{n:"Cryomancer",p:"magician",hd:4,xg:5,desc:"A sorcerer of cold and ice",req:{IN:9,WS:9},pr:["IN","WS"],al:"LG, N, LE",arm:"None",shi:"None",fav:"Dagger, staff",up:-4,ha9:1,sv:{D:0,T:0,V:2,A:0,S:2},fa:[0,0,0,1,1,2,2,3,3,4,4,5,5],ab:[{n:"Ice/Cold Affinity",d:"+2 saves vs cold"},{n:"Fire Vulnerability",d:"−2 saves vs fire"},{n:"Icicle",d:"Magic dagger, 1/day per level"},{n:"Sorcery / Familiar / Alchemy",d:"Cryomancer list"}],pk:"Hand axes ×2, silver dagger, short spear, backpack, bandages, winter blanket, beeswax candles ×3, chalk, crampons, small hammer, ink & quill, bull's-eye lantern, lamp oil ×2, parchment ×3, hard leather pouch, soft leather pouch, iron rations (1 week), silk rope (50 ft.), large sack, iron spikes ×12, tinderbox, wineskin, writing stick, spell book"},
+illusionist:{n:"Illusionist",p:"magician",hd:4,xg:5,desc:"A sorcerer of phantasms and bent minds",req:{DX:9,IN:9},pr:["DX","IN"],al:"Any",arm:"None",shi:"None",fav:"Dagger, dart, staff",up:-4,ha9:1,sv:{D:0,T:0,V:2,A:0,S:2},fa:[0,0,0,1,1,2,2,3,3,4,4,5,5],ab:[{n:"Coloured Globes / Perceive Illusion",d:"Light orbs; detect illusions"},{n:"Vizard",d:"Alter countenance cantrip"},{n:"Sorcery / Familiar / Alchemy",d:"Illusionist list"}],pk:"Silver dagger, quarterstaff, sling, bullets ×20, backpack, bandages, winter blanket, chalk, ink & quill, hooded lantern, silver mirror, lamp oil ×2, parchment ×3, soft leather pouch, iron rations (1 week), silk rope (50 ft.), small sack, tinderbox, wineskin, writing stick, spell book"},
+necromancer:{n:"Necromancer",p:"magician",hd:4,xg:5,desc:"A sorcerer of black magic and the dead",req:{IN:9,WS:9},pr:["IN","WS"],al:"N, LE, CE",arm:"None",shi:"None",fav:"Dagger, sickle, staff",up:-4,ha9:1,sv:{D:2,T:0,V:0,A:0,S:2},fa:[0,0,0,1,1,2,2,3,3,4,4,5,5],ab:[{n:"Alchemy (Poisons)",d:"Specialize in poisons"},{n:"Command Undead",d:"At 3rd, TA 1"},{n:"Sorcery / Familiar",d:"Necromancer list"}],pk:"Sickle, sling, bullets ×20, whip, backpack, winter blanket, chalk, wooden holy symbol, ink & quill, hooded lantern, steel mirror, incendiary oil, lamp oil ×2, parchment ×3, hard leather pouch, soft leather pouch, iron rations (1 week), silk rope (50 ft.), small sack, tinderbox, wineskin, writing stick, spell book"},
+pyromancer:{n:"Pyromancer",p:"magician",hd:4,xg:5,desc:"A sorcerer of heat and fire",req:{IN:9,WS:9},pr:["IN","WS"],al:"CG, N, CE",arm:"None",shi:"None",fav:"Dagger, staff",up:-4,ha9:1,sv:{D:0,T:0,V:2,A:0,S:2},fa:[0,0,0,1,1,2,2,3,3,4,4,5,5],ab:[{n:"Fire Affinity / Cold Vulnerability",d:"+2/−2 saves"},{n:"Candle",d:"Palm flame cantrip"},{n:"Incendiary Oil",d:"At 9th, secret formula"},{n:"Sorcery / Familiar / Alchemy",d:"Pyromancer list"}],pk:"Darts ×4, quarterstaff, long scimitar, backpack, bandages, winter blanket, chalk, ink & quill, incendiary oil, parchment ×5, hard leather pouch, soft leather pouch, iron rations (1 week), hemp rope (50 ft.), small sack, tinderbox, torches ×3, wineskin, writing stick, spell book"},
+witch:{n:"Witch",p:"magician",hd:4,xg:7,desc:"A sorcerer who brews potions and lays curses",req:{IN:9,WS:9,CH:12},pr:["IN","CH"],al:"CG, N, CE",arm:"None",shi:"None",fav:"Dagger, sickle, staff",up:-4,ha9:1,sv:{D:0,T:2,V:0,A:0,S:2},fa:[0,0,0,1,1,2,2,3,3,4,4,5,5],ab:[{n:"Brew Decoction",d:"Potions, poisons, philtres"},{n:"Familiar",d:"Spiritual bond companion"},{n:"Dance / Effigy / Animate Broom",d:"Beguilement L5; Effigies L5; Broom L7"}],pk:"Blowgun, needles ×10, silver dagger, backpack, bandages, winter blanket, beeswax candles ×2, brass censer, chalk, incense ×12, ink & quill, body paint, parchment ×2, soft leather pouch, iron rations (1 week), wooden rattle, hemp rope (50 ft.), small sack, tinderbox, torches ×3, wineskin, wolfsbane, writing stick, spell book"},
+druid:{n:"Druid",p:"cleric",hd:8,xg:3,desc:"A mystic of ancestral and elemental spirits",req:{WS:9,CH:12},pr:["WS","CH"],al:"N",arm:"Leather",shi:"Small",fav:"Sickle, spear, staff",up:-2,ha9:2,sv:{D:2,T:0,V:0,A:0,S:2},fa:[0,1,1,2,2,3,4,5,5,6,6,7,8],ab:[{n:"Fire Affinity / Natural Identifications",d:"+2 fire saves; identify flora/fauna"},{n:"Druidic Tongue",d:"Secret language"},{n:"Shapechange / Charm Immunity",d:"At 5th, animal forms; immune charm"},{n:"Sorcery",d:"Druid list"}],pk:"Studded armour, short bow, arrows ×12, dagger, short spear, arrow quiver, backpack, bandages, wooden holy symbol, iron rations (1 week), body paint, parchment ×3, soft leather pouch, small sack, tinderbox, torches ×3, wineskin, wolfsbane, writing stick"},
+monk:{n:"Monk",p:"cleric",hd:8,xg:5,desc:"A warrior-priest of mastery",req:{ST:9,DX:9,WS:9},pr:["DX","WS"],al:"Any",arm:"None",shi:"None",fav:"Blunt, polearms",up:-2,ha9:2,sv:{D:0,T:2,V:0,A:2,S:0},fa:[0,1,1,2,2,3,4,5,5,6,6,7,8],ab:[{n:"Empty Hand",d:"1d4→2d4→4d4; stun"},{n:"Defensive Ability",d:"AC +1/+3/+5"},{n:"Block Missile",d:"1/round"},{n:"Thief Skills / Cellular Adj.",d:"Climb, Hide, etc.; self-heal"}],pk:"Cæstuses, silver dagger, halberd, hooked throwing knife, backpack, bandages, winter blanket, fishing hooks ×12, fishing string, incense ×12, soft leather pouch, iron rations (1 week), silk rope (50 ft.), small sack, tinderbox, torches ×3, wineskin, writing stick"},
+priest:{n:"Priest",p:"cleric",hd:6,xg:3,desc:"A prodigious ecclesiastical spell-caster",req:{WS:9,CH:9},pr:["WS","CH"],al:"Any",arm:"None",shi:"None",fav:"Blunt weapons",up:-4,ha9:1,sv:{D:2,T:0,V:0,A:0,S:2},fa:[0,0,0,1,1,2,2,3,3,4,4,5,5],ab:[{n:"Sorcery",d:"Highest capacity: 4 spells/level"},{n:"Turn Undead",d:"Repel/destroy"},{n:"Daemonwrack",d:"At 9th, dismiss/beckon fiends"},{n:"Specialized Faith",d:"Deity-specific powers"}],pk:"Silver dagger, quarterstaff, whip, backpack, bandages, winter blanket, religious clothing, silver holy symbol, holy water, soft leather pouch, wooden prayer beads, iron rations (1 week), small sack, tinderbox, torches ×3, wineskin, writing stick"},
+runegraver:{n:"Runegraver",p:"cleric",hd:8,xg:7,desc:"A mystic warrior who carves runic spells",req:{ST:9,WS:12},pr:["ST","WS"],al:"CG, CE",arm:"Light, Medium",shi:"Any",fav:"All weapons",up:-2,ha9:2,sv:{D:2,T:0,V:0,A:0,S:2},fa:[0,1,1,2,2,3,4,5,5,6,6,7,8],ab:[{n:"Grave Runes",d:"Spells via blood; 1 hp/spell level"},{n:"Ale Horn / Cast Lots",d:"Ritual horn; rune augury"},{n:"Nithing Pole",d:"Curse enemies"},{n:"Berserker Horde",d:"At 9th, summon warband"}],pk:"Studded armour, battle axe, short bow, arrows ×12, silver arrows ×2, dagger, arrow quiver, backpack, bandages, chalk, dice, wooden holy symbol, drinking horn, soft leather pouch, iron rations (1 week), tinderbox, torches ×2, waterskin, writing stick"},
+shaman:{n:"Shaman",p:"cleric",hd:6,xg:5,desc:"A primal spiritualist of dual sorcery",req:{IN:9,WS:12},pr:["IN","WS"],al:"CG, N, CE",arm:"Leather",shi:"Small",fav:"Blunt, spear",up:-4,ha9:1,sv:{D:2,T:0,V:0,A:0,S:2},fa:[0,0,0,1,1,2,2,3,3,4,4,5,5],ab:[{n:"Dual Sorcery",d:"Two schools at creation"},{n:"Medicine Man / Totem",d:"Heal; spirit guide"},{n:"Draw Poison / Harvest Venom",d:"Extract poisons"},{n:"Turn Undead",d:"As cleric"}],pk:"Studded armour, war club, dagger, backpack, bandages, belladonna, brass censer, wooden totem, incense ×12, wooden mask, soft leather pouch, wooden rattle, iron rations (1 week), hemp rope (50 ft.), small sack, tinderbox, torches ×3, wineskin, bark sheet spell book"},
+assassin:{n:"Assassin",p:"thief",hd:6,xg:2,desc:"A specialist in murder and intrigue",req:{ST:9,DX:9,IN:9},pr:["DX","IN"],al:"N, LE, CE",arm:"Light",shi:"Small",fav:"Swords, daggers, crossbow",up:-2,ha9:2,sv:{D:0,T:0,V:2,A:2,S:0},fa:[0,1,1,2,2,3,4,5,5,6,6,7,8],ab:[{n:"Assassinate / Sniper Attack",d:"Instant kill on backstab; ranged kill"},{n:"Disguise / Poison Use",d:"Master disguise; safe poison use; manufacture at 9th"},{n:"Backstab / Thief Abilities",d:"As Thief"}],pk:"Leather armour, light crossbow, light bolts ×20, dagger, short sword, backpack, winter blanket, bolt case, disguise clothing, soft leather pouch, iron rations (1 week), hemp rope (50 ft.), small sack, thieves' tools, tinderbox, torches ×3, wineskin"},
+bard:{n:"Bard",p:"thief",hd:8,xg:5,desc:"A warrior-scholar of enchanted music",req:{ST:9,DX:9,IN:9,WS:9,CH:15},pr:["DX","CH"],al:"CG, N, CE",arm:"Light, Medium",shi:"Small",fav:"All weapons",up:-2,ha9:2,sv:{D:0,T:0,V:2,A:2,S:0},fa:[0,1,1,2,2,3,4,5,5,6,6,7,8],ab:[{n:"Sorcery",d:"Druid + Illusionist spells"},{n:"Countersong / Inspirit / Mesmerize",d:"Negate sonic magic; morale boost; entrance"},{n:"Folklore / Thief Abilities",d:"Recall lore; Hide, Move Silent (d12)"}],pk:"Studded armour, short bow, arrows ×12, daggers ×2, footman's mace, arrow quiver, backpack, bandages, chalk, flute, ink & quill, parchment ×3, soft leather pouch, iron rations (1 week), hemp rope (50 ft.), large sack, tinderbox, torches ×2, wineskin, spell book"},
+legerdemainist:{n:"Legerdemainist",p:"thief",hd:4,xg:6,desc:"An adept thief-sorcerer",req:{DX:12,IN:12},pr:["DX","IN"],al:"Any",arm:"Light",shi:"Small",fav:"Light weapons",up:-2,ha9:1,sv:{D:0,T:0,V:2,A:2,S:0},fa:[0,1,1,2,2,3,4,5,5,6,6,7,8],ab:[{n:"Sorcery",d:"Chosen school (Mag/Cryo/Ill/Pyro)"},{n:"Backstab / Agile / Thief Abilities",d:"As Thief"},{n:"Scroll Writing",d:"From chosen school"}],pk:"Studded armour, small shield, daggers ×2, falcata, sling, bullets ×20, backpack, bandages, winter blanket, ink & quill, parchment, soft leather pouch, iron rations (1 week), hemp rope (50 ft.), small sack, thieves' tools, tinderbox, torches ×2, wineskin, spell book"},
+purloiner:{n:"Purloiner",p:"thief",hd:6,xg:5,desc:"A hallowed thief of divine sorcery",req:{DX:12,WS:12},pr:["DX","WS"],al:"Any",arm:"Light",shi:"Small",fav:"Light weapons",up:-2,ha9:2,sv:{D:0,T:0,V:2,A:2,S:0},fa:[0,1,1,2,2,3,4,5,5,6,6,7,8],ab:[{n:"Sorcery / Turn Undead",d:"Cleric spells; TA 1 at L1"},{n:"Backstab / Agile / Thief Abilities",d:"As Thief"}],pk:"Leather armour, dagger, morning star, sling, bullets ×20, backpack, bandages, winter blanket, dice, wooden holy symbol, holy water, soft leather pouch, iron rations (1 week), small sack, thieves' tools, tinderbox, torches ×2, wineskin, writing stick"},
+scout:{n:"Scout",p:"thief",hd:6,xg:2,desc:"A lightly armed spy and explorer",req:{DX:9,IN:9},pr:["DX","IN"],al:"Any",arm:"Light",shi:"Small",fav:"Light weapons, bows",up:-2,ha9:2,sv:{D:0,T:0,V:2,A:2,S:0},fa:[0,1,1,2,2,3,4,5,5,6,6,7,8],ab:[{n:"Agile / Alertness",d:"+1 AC; surprised 1-in-8"},{n:"Backstab / Track",d:"As Thief; 10-in-12 wilderness"},{n:"Wilderness Survival / Thief Abilities",d:"Forage, shelter; d12 skills"}],pk:"Padded armour, small shield, hand axes ×2, darts ×4, backpack, bandages, winter blanket, chalk, disguise clothing, grappling hook, grease, marbles ×20, parchment, 10-ft. pole, soft leather pouch, iron rations (1 week), hemp rope (50 ft.), small sack, thieves' tools, tinderbox, torches ×3, wineskin, writing stick"},
+};
+// ═══ CORE LOGIC ═══
+const AO=["ST","DX","CN","IN","WS","CH"],AN={ST:"Strength",DX:"Dexterity",CN:"Constitution",IN:"Intelligence",WS:"Wisdom",CH:"Charisma"},PL={fighter:"Fighter",magician:"Magician",cleric:"Cleric",thief:"Thief"},SNK=["D","T","V","A","S"],SNF={D:"Death",T:"Transform",V:"Device",A:"Avoidance",S:"Sorcery"};
+const XT={1:[0,0,0,0,0,0,0],2:[1500,1750,2000,2250,2500,2750,3000],3:[3000,3500,4000,4500,5000,5500,6000],4:[6000,7000,8000,9000,10000,11000,12000],5:[12000,14000,16000,18000,20000,22000,24000],6:[24000,28000,32000,36000,40000,44000,48000],7:[48000,56000,64000,72000,80000,88000,96000],8:[96000,112000,128000,144000,160000,176000,192000],9:[192000,224000,256000,288000,320000,352000,384000],10:[288000,336000,384000,432000,480000,528000,576000],11:[384000,448000,512000,576000,640000,704000,768000],12:[480000,560000,640000,720000,800000,880000,960000]};
+let S={m:null,l:1,cf:"all",ch:null,lk:null};
+function rd(s){return Math.floor(Math.random()*s)+1}function r3(){return rd(6)+rd(6)+rd(6)}function r4(){const d=[rd(6),rd(6),rd(6),rd(6)].sort((a,b)=>a-b);return d[1]+d[2]+d[3]}function fm(n){return n>=0?"+"+n:""+n}
+function stM(v){if(v<=3)return{a:-2,d:-2,t:"1:6"};if(v<=6)return{a:-1,d:-1,t:"1:6"};if(v<=8)return{a:0,d:-1,t:"2:6"};if(v<=12)return{a:0,d:0,t:"2:6"};if(v<=14)return{a:0,d:1,t:"3:6"};if(v<=16)return{a:1,d:1,t:"3:6"};if(v===17)return{a:1,d:2,t:"4:6"};return{a:2,d:3,t:"5:6"}}
+function dxM(v){if(v<=3)return{a:-2,d:-2};if(v<=6)return{a:-1,d:-1};if(v<=8)return{a:-1,d:0};if(v<=12)return{a:0,d:0};if(v<=14)return{a:1,d:0};if(v<=16)return{a:1,d:1};if(v===17)return{a:2,d:1};return{a:3,d:2}}
+function cnM(v){if(v<=3)return{h:-1,p:-2,t:"45%"};if(v<=6)return{h:-1,p:-1,t:"55%"};if(v<=8)return{h:0,p:0,t:"65%"};if(v<=12)return{h:0,p:0,t:"75%"};if(v<=14)return{h:1,p:0,t:"80%"};if(v<=16)return{h:1,p:1,t:"85%"};if(v===17)return{h:2,p:1,t:"90%"};return{h:3,p:2,t:"95%"}}
+function inM(v){if(v<=6)return{l:"Illiterate",s:"—"};if(v<=8)return{l:"±0",s:"—"};if(v<=12)return{l:"±0",s:"50%"};if(v<=14)return{l:"+1",s:"65%"};if(v<=16)return{l:"+1",s:"75%"};if(v===17)return{l:"+2",s:"85%"};return{l:"+3",s:"95%"}}
+function wsM(v){if(v<=3)return{w:-2,s:"—"};if(v<=6)return{w:-1,s:"—"};if(v<=8)return{w:0,s:"—"};if(v<=12)return{w:0,s:"50%"};if(v<=14)return{w:0,s:"65%"};if(v<=16)return{w:1,s:"75%"};if(v===17)return{w:1,s:"85%"};return{w:2,s:"95%"}}
+function chM(v){if(v<=3)return{r:-3,h:1};if(v<=6)return{r:-2,h:2};if(v<=8)return{r:-1,h:3};if(v<=12)return{r:0,h:4};if(v<=14)return{r:1,h:6};if(v<=16)return{r:1,h:8};if(v===17)return{r:2,h:10};return{r:3,h:12}}
+function gSV(l){if(l<=0)return 17;if(l<=2)return 16;if(l<=4)return 15;if(l<=6)return 14;if(l<=8)return 13;if(l<=10)return 12;return 11}
+function gA(cd){const a={},r={};for(const at of AO){const rq=cd.req[at];if(rq){let v=0,n=0;do{v=r4();n++}while(v<rq&&n<100);a[at]=v;r[at]={m:"4d6kh3",v,rq}}else{let v=r3(),w=v;if(v<7)v=7;a[at]=v;r[at]={m:"3d6",v,w}}}return{a,r}}
+function gHP(l,hd,ch,h9){const hr=[];let t=0;for(let i=1;i<=Math.min(l,9);i++){if(i===1){const a=rd(hd),b=rd(hd),bs=Math.max(a,b),hp=Math.max(1,bs+ch);hr.push({l:i,r:[a,b],c:bs,b:ch,t:hp});t+=hp}else{const a=rd(hd),hp=Math.max(1,a+ch);hr.push({l:i,r:[a],c:a,b:ch,t:hp});t+=hp}}for(let i=10;i<=l;i++){hr.push({l:i,r:[],c:h9,b:0,t:h9});t+=h9}return{t,hr}}
+function getAC(k,dxDef){const pa=PKA[k];if(!pa)return{ac:9,dr:0,mv:40,armName:"None",shiName:"None"};const ar=ARM[pa.a]||ARM.none;let ac=ar.ac,dr=ar.dr,mv=ar.mv,an=pa.a==="none"?"None":pa.a.charAt(0).toUpperCase()+pa.a.slice(1);let sn="None";if(pa.s){const sh=SHIELDS[pa.s];ac-=sh.def;sn=pa.s.charAt(0).toUpperCase()+pa.s.slice(1)+" shield"}ac-=dxDef;return{ac,dr,mv,armName:an,shiName:sn,armCls:ar.cls}}
+function getWeapons(k,stAtk,stDmg,dxAtk){const wl=PKW[k]||[];return wl.map(wn=>{const wd=W[wn];if(!wd)return null;const isMelee=wd.type==="melee";const atkMod=isMelee?stAtk:dxAtk;const dmgMod=isMelee?stDmg:0;// ST dmg for melee, not for launched missiles generally
+return{name:wn.charAt(0).toUpperCase()+wn.slice(1),wc:wd.wc,range:wd.range||"—",rof:wd.rof,dmg:wd.dmg,type:wd.type,atkMod,dmgMod,notes:wd.notes||""}}).filter(Boolean)}
+function gen(k,l){const cd=C[k],{a,r}=gA(cd),cn=cnM(a.CN),hp=gHP(l,cd.hd,cn.h,cd.ha9),g=rd(4)+1;const st=stM(a.ST),dx=dxM(a.DX);const ac=getAC(k,dx.d);const wpns=getWeapons(k,st.a,st.d,dx.a);S.ch={k,cd,l,a,r,hp,g,ac,wpns,st,dx,cn};S.lk=k;rS();show("sheet")}
+function genR(l){const ks=Object.keys(C);gen(ks[Math.floor(Math.random()*ks.length)],l)}
+function show(n){document.querySelectorAll('[id^="screen-"]').forEach(e=>e.classList.add("hidden"));document.getElementById("screen-"+n).classList.remove("hidden");window.scrollTo(0,0)}
+function startMode(m){S.m=m;rL();show("level")}
+function proceed(){if(S.m==="random")genR(S.l);else{rC();show("class")}}
+function rL(){const c=document.getElementById("lb");c.innerHTML="";for(let l=1;l<=12;l++){const b=document.createElement("div");b.className="level-btn"+(S.l===l?" active":"");b.textContent=l;b.onclick=()=>{S.l=l;rL()};c.appendChild(b)}document.getElementById("blp").textContent=S.m==="random"?"Roll Character":"Choose Class"}
+function rC(){document.getElementById("csub").textContent=`Level ${S.l} — Select a class`;const f=document.getElementById("fb");f.innerHTML="";["all","fighter","magician","cleric","thief"].forEach(v=>{const b=document.createElement("button");b.className="filter-btn"+(S.cf===v?" active":"");b.textContent=v==="all"?"All":PL[v]+"s";b.onclick=()=>{S.cf=v;rC()};f.appendChild(b)});const g=document.getElementById("cg");g.innerHTML="";Object.entries(C).forEach(([k,c])=>{if(S.cf!=="all"&&c.p!==S.cf)return;const d=document.createElement("div");d.className="class-card p"+c.p[0];d.innerHTML=`<h4>${c.n}</h4><div class="ct">${PL[c.p]}${c.n!==PL[c.p]?" Sub":""}</div><div class="cr">Req: ${Object.entries(c.req).map(([a,v])=>a+" "+v).join(", ")}</div><div class="ch">HD d${c.hd} | XP ${c.xg}</div>`;d.onclick=()=>gen(k,S.l);g.appendChild(d)})}
+// ═══ RENDER SHEET ═══
+function rS(){
+const{k,cd,l,a,r,hp,g,ac,wpns,st,dx,cn}=S.ch,fa=cd.fa[Math.min(l,12)],sv=gSV(l),
+xn=XT[l]?XT[l][cd.xg-1]:0,xnx=l>=12?"—":XT[l+1][cd.xg-1].toLocaleString(),
+pb=cd.pr.every(p=>a[p]>=16),pc=({fighter:"var(--fighter)",magician:"var(--magician)",cleric:"var(--cleric)",thief:"var(--thief)"})[cd.p],
+pl=PL[cd.p],sn=cd.n!==pl?` (${pl} subclass)`:"";
+// Attrs
+let ah="";for(const at of AO){const ip=cd.pr.includes(at),ri=r[at];let mt=ri.m==="4d6kh3"?`4d6kh3 (req ${ri.rq}+)`:`3d6${ri.w!==undefined&&ri.w<7?` (${ri.w}→7)`:""}`,md="";
+if(at==="ST")md=`Atk ${fm(st.a)} | Dmg ${fm(st.d)} | Test ${st.t}`;
+if(at==="DX")md=`Atk ${fm(dx.a)} | Def ${fm(dx.d)}`;
+if(at==="CN")md=`HP ${fm(cn.h)} | Psn ${fm(cn.p)} | Trm ${cn.t}`;
+if(at==="IN"){const m=inM(a.IN);md=`Lang ${m.l} | Learn ${m.s}`}
+if(at==="WS"){const m=wsM(a.WS);md=`Will ${fm(m.w)} | Learn ${m.s}`}
+if(at==="CH"){const m=chM(a.CH);md=`React ${fm(m.r)} | Hench ${m.h}`}
+ah+=`<div class="sb"><div class="sl">${AN[at]}${ip?" ★":""}</div><div class="sval${ip?" prime":""}">${a[at]}</div><div class="smeth">${mt}</div><div class="smod">${md}</div></div>`}
+// Saves
+const wm=wsM(a.WS);let sh="";
+for(const s of SNK){const cm=cd.sv[s]||0;let am=0;if(s==="A"&&dx.d>0)am=dx.d;if(s==="S"&&wm.w>0)am=wm.w;const tm=cm+am,ef=sv-tm;
+sh+=`<div class="sx"><div class="sxn">${SNF[s]}</div><div class="sxv">${ef}</div>${tm>0?`<div class="sxm">${fm(tm)}</div>`:""}</div>`}
+// HP
+let hh="";for(const h of hp.hr){const cl=h.l===1?' class="l1"':"";let t=h.l<=9?(h.l===1?`d${cd.hd}×2: [${h.r[0]},${h.r[1]}]→${h.c}, ${fm(h.b)} CN = ${h.t}`:`d${cd.hd}: ${h.c}, ${fm(h.b)} CN = ${h.t}`):`Flat +${h.t}`;hh+=`<div${cl}><strong>L${h.l}:</strong> ${t}</div>`}
+// Weapons table
+let wh=`<table class="wt"><thead><tr><th>Weapon</th><th>Type</th><th>WC</th><th>Range</th><th>ROF</th><th>Damage</th><th>Atk Mod</th><th>Dmg Mod</th><th>Notes</th></tr></thead><tbody>`;
+for(const w of wpns){const ac2=w.atkMod!==0?`<span class="${w.atkMod>0?"mod-pos":"mod-neg"}">${fm(w.atkMod)}</span>`:"—";
+const dc=w.dmgMod!==0?`<span class="${w.dmgMod>0?"mod-pos":"mod-neg"}">${fm(w.dmgMod)}</span>`:"—";
+wh+=`<tr><td>${w.name}</td><td>${w.type}</td><td>${w.wc}</td><td>${w.range}</td><td>${w.rof}</td><td>${w.dmg}</td><td>${ac2}</td><td>${dc}</td><td>${w.notes}</td></tr>`}
+wh+="</tbody></table>";
+// Combat matrix
+const acR=[9,8,7,6,5,4,3,2,1,0,-1,-2,-3,-4,-5,-6,-7,-8,-9];let mth=acR.map(c=>`<th>${c}</th>`).join(""),mr="";
+const ufa=[...new Set(cd.fa.slice(0,l+1))].sort((a,b)=>a-b);
+for(const f of ufa){const ic=f===fa;mr+=`<tr${ic?' class="cur"':""}><td class="fl">${f}${ic?" ◄":""}</td>`;
+for(const c of acR){const nd=Math.max(1,Math.min(20,(11-f)+(9-c)));mr+=`<td class="${nd<=10?"he":nd>=18?"hh":""}">${nd>20?"—":nd}</td>`}mr+="</tr>"}
+// Abilities
+let abl="";for(const b of cd.ab)abl+=`<div><span class="an">${b.n}:</span> ${b.d}</div>`;
+// Equipment
+const items=cd.pk.split(", ");let eq=items.map(i=>`<div class="ei">• ${i}</div>`).join("");
+
+document.getElementById("sc").innerHTML=`<div class="sheet">
+<div class="sheet-header"><h1>Hyperborea</h1><div class="class-badge" style="background:${pc}">${cd.n}</div><div class="sheet-sub">${cd.desc} — Level ${l}${sn}</div></div>
+<div class="stats-row">${ah}</div>
+<div class="dg">
+<div class="db"><div class="dlbl">Hit Points</div><div class="dval" style="color:#e53935">${hp.t}</div></div>
+<div class="db"><div class="dlbl">Hit Die</div><div class="dval">d${cd.hd}</div></div>
+<div class="db"><div class="dlbl">Armour Class</div><div class="dval" style="color:#42a5f5">${ac.ac}</div></div>
+<div class="db"><div class="dlbl">DR</div><div class="dval">${ac.dr}</div></div>
+<div class="db"><div class="dlbl">Movement</div><div class="dval">${ac.mv}</div></div>
+<div class="db"><div class="dlbl">Fighting Ability</div><div class="dval">${fa}</div></div>
+</div>
+<div class="ig">
+<div><strong>Armour Worn:</strong> ${ac.armName}${ac.armCls&&ac.armCls!=="—"?" ("+ac.armCls+")":""}</div>
+<div><strong>Shield:</strong> ${ac.shiName}</div>
+<div><strong>Alignment:</strong> ${cd.al}</div>
+<div><strong>XP Group:</strong> ${cd.xg}</div>
+<div><strong>XP for Level ${l}:</strong> ${xn.toLocaleString()}</div>
+<div><strong>XP for Next:</strong> ${xnx}</div>
+<div><strong>10% XP Bonus:</strong> ${pb?"Yes":"No"}</div>
+<div><strong>Unskilled Penalty:</strong> ${cd.up}</div>
+<div class="wide"><strong>Favoured Weapons:</strong> ${cd.fav}</div>
+</div>
+<div class="st">Saving Throws (Base ${sv})</div><div class="sg">${sh}</div>
+<div class="st">Class Abilities</div><div class="al">${abl}</div>
+<div class="st">Weapons</div>${wh}
+<div class="st">Hit Point Breakdown</div><div class="hpb">${hh}<div class="hpt">Total: ${hp.t} hp</div></div>
+<div class="st">Combat Matrix (FA Progression through Level ${l})</div><div class="cm"><table><thead><tr><th>FA</th>${mth}</tr></thead><tbody>${mr}</tbody></table></div>
+<div class="st">Starting Equipment</div><div class="ec">${eq}</div><div class="sg-gold">Starting Gold: ${g} gp (1d4+1)</div>
+</div>`;
+// Buttons
+const bc=document.getElementById("sbtns");bc.innerHTML="";
+[{t:"Reroll",c:"btn-primary",f:()=>{if(S.m==="random")genR(S.l);else gen(S.lk,S.l)}},
+{t:S.m==="random"?"Change Level":"Change Class",c:"btn-secondary",f:()=>show(S.m==="random"?"level":"class")},
+{t:"Start Over",c:"btn-secondary",f:()=>{S={m:null,l:1,cf:"all",ch:null,lk:null};show("welcome")}},
+{t:"⎙ Print / Save PDF",c:"btn-secondary",f:()=>window.print()},
+{t:"⤓ Save as HTML",c:"btn-secondary",f:saveHTML}
+].forEach(x=>{const b=document.createElement("button");b.className=x.c;b.textContent=x.t;b.onclick=x.f;bc.appendChild(b)})}
+function saveHTML(){
+const sheet=document.querySelector(".sheet");if(!sheet)return;
+const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Hyperborea Character</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700;900&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>body{background:#1a1510;color:#d4cbb8;font-family:'EB Garamond',Georgia,serif;padding:20px;margin:0}${document.querySelector("style").textContent}</style></head><body><div class="center-col">${sheet.outerHTML}</div></body></html>`;
+const blob=new Blob([html],{type:"text/html"});const a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+const cn=S.ch?S.ch.cd.n.toLowerCase().replace(/\s+/g,"-"):"character";
+a.download=`hyperborea-${cn}-L${S.ch?S.ch.l:1}.html`;a.click();URL.revokeObjectURL(a.href)}
+rL();
+</script></body></html>
